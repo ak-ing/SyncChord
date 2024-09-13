@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SyncChord</string>
+
+    <string name="text_nav_home">首页</string>
+    <string name="text_nav_notification">通知</string>
+    <string name="text_nav_profile">您</string>
+</resources>
