@@ -8,16 +8,21 @@
     <fragment
         android:id="@+id/home"
         android:name="com.aking.syncchord.home.ui.HomeFragment"
-        android:label="player"
+        android:label="@string/text_nav_home"
         tools:layout="@layout/fragment_home">
 
     </fragment>
 
     <fragment
+        android:id="@+id/notification"
+        android:name="com.aking.syncchord.notification.ui.NotificationFragment"
+        android:label="@string/text_nav_notification"
+        tools:layout="@layout/fragment_notification" />
+
+    <fragment
         android:id="@+id/profile"
         android:name="com.aking.syncchord.profile.ui.ProfileFragment"
-        android:label="musicList"
+        android:label="@string/text_nav_profile"
         tools:layout="@layout/fragment_profile" />
 
-    <!-- Add other fragment destinations similarly. -->
 </navigation>

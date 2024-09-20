@@ -7,6 +7,12 @@
         android:title="@string/text_nav_home" />
 
     <item
+        android:id="@+id/notification"
+        android:contentDescription="@string/text_nav_notification"
+        android:icon="@drawable/ic__notifications_24"
+        android:title="@string/text_nav_notification" />
+
+    <item
         android:id="@+id/profile"
         android:contentDescription="@string/text_nav_profile"
         android:icon="@drawable/ic_face_24"

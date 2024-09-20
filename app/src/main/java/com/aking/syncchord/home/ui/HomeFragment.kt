@@ -1,14 +1,11 @@
 package com.aking.syncchord.home.ui
 
 import androidx.fragment.app.viewModels
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import com.aking.base.base.BaseFragment
 import com.aking.syncchord.R
+import com.aking.syncchord.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     companion object {
         fun newInstance() = HomeFragment()
@@ -16,16 +13,9 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    override fun FragmentHomeBinding.initView() {
+        tabMessage.setOnClickListener {
+            tabMessage.isSelected = it.isSelected.not()
+        }
     }
 }
