@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/ic_message_48_p"
+        android:state_pressed="true" />
+    <item
+        android:drawable="@drawable/ic_message_48"
+        android:state_pressed="false" />
+</animated-selector>
