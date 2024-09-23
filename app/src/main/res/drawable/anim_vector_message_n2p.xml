@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/ic_message">
+
+    <target android:name="vector">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="@integer/material_motion_duration_medium_1"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="pathData"
+                android:startOffset="@integer/material_motion_duration_short_1"
+                android:valueFrom="M479.99,0L480.01,0A479.99,479.99 135,0 1,960 479.99L960,480.01A479.99,479.99 45,0 1,480.01 960L479.99,960A479.99,479.99 45,0 1,0 480.01L0,479.99A479.99,479.99 0,0 1,479.99 0z"
+                android:valueTo="M282.32,0L677.68,0A282.32,282.32 0,0 1,960 282.32L960,677.68A282.32,282.32 0,0 1,677.68 960L282.32,960A282.32,282.32 0,0 1,0 677.68L0,282.32A282.32,282.32 0,0 1,282.32 0z"
+                android:valueType="pathType" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="vector">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="@integer/material_motion_duration_short_1"
+                android:propertyName="fillColor"
+                android:valueFrom="@color/color_workspace_icon_bg_def"
+                android:valueTo="@color/color_primary"
+                android:valueType="colorType" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="inner">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="@integer/material_motion_duration_medium_2"
+                android:propertyName="fillColor"
+                android:valueFrom="@color/color_workspace_icon_inner_def"
+                android:valueTo="@color/white"
+                android:valueType="colorType" />
+        </aapt:attr>
+    </target>
+</animated-vector>

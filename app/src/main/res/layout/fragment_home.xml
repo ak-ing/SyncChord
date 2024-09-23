@@ -19,9 +19,10 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="72dp" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/tab_message"
             android:layout_width="48dp"
+            app:srcCompat="@drawable/animated_selector_message_tab"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"

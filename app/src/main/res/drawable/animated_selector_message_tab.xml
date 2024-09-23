@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ic_message_48_p"
-        android:state_pressed="true" />
+        android:id="@+id/selected"
+        android:drawable="@drawable/ic_message_p"
+        android:state_selected="true" />
     <item
-        android:drawable="@drawable/ic_message_48"
-        android:state_pressed="false" />
+        android:id="@+id/normal"
+        android:drawable="@drawable/ic_message"
+        android:state_selected="false" />
+
+    <transition
+        android:drawable="@drawable/anim_vector_message_n2p"
+        android:fromId="@id/normal"
+        android:toId="@id/selected" />
+
+    <transition
+        android:drawable="@drawable/anim_vector_message_p2n"
+        android:fromId="@id/selected"
+        android:toId="@id/normal" />
 </animated-selector>
