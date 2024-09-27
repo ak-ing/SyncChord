@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.SyncChord" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -11,6 +11,19 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+
         <!-- Customize your theme here. -->
+        <!-- 背景色 -->
+        <item name="android:colorBackground">@color/color_background</item>
+        <!-- 表面色:MaterialCardView -->
+        <item name="colorSurface">@color/white</item>
+        <!-- bottomNavigation Container app:backgroundTint -->
+        <item name="colorSurfaceContainer">@color/color_bottom_navi</item>
+        <!-- bottomNavigation Active indicator setItemActiveIndicatorColor -->
+        <item name="colorSecondaryContainer">@color/color_primary80</item>
+        <!-- bottomNavigation Icon app:itemIconTint inactive -->
+        <item name="colorOnSurfaceVariant">@color/color_icon_normal</item>
+        <!-- bottomNavigation Icon app:itemIconTint active -->
+        <item name="colorOnSecondaryContainer">@color/color_icon_selected</item>
     </style>
 </resources>

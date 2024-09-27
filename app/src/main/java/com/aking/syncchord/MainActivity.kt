@@ -24,5 +24,13 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navView: BottomNavigationView = findViewById(R.id.navigation)
         navView.setupWithNavController(navHostFragment.navController)
+        setupBadge(navView)
+    }
+
+    private fun setupBadge(navView: BottomNavigationView) {
+        val badge = navView.getOrCreateBadge(R.id.notification)
+        badge.isVisible = true
+        // An icon only badge will be displayed unless a number or text is set:
+        //badge.number = 15  // or badge.text = "New"
     }
 }
