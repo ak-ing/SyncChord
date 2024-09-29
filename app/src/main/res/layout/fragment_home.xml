@@ -43,6 +43,9 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:checkable="true"
             app:layout_constraintStart_toEndOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearance="@style/workspacePanelStyle"
@@ -67,6 +70,7 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/Widget.Material3.FloatingActionButton.Primary"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
                 android:contentDescription="TODO"

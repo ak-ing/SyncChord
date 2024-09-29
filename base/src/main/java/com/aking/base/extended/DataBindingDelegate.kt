@@ -79,7 +79,6 @@ class FragmentDataBindingDelegate<in F : Fragment, out T : ViewDataBinding> {
     inner class Clear(private val thisRef: F) : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
             if (thisRef === f) {
-                binding?.unbind()
                 binding = null
                 fm.unregisterFragmentLifecycleCallbacks(this)
             }

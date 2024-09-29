@@ -7,6 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.aking.base.extended.collectWithLifecycle
+import com.aking.data.Convex
+import com.aking.data.SignInUserCase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.navigation)
         navView.setupWithNavController(navHostFragment.navController)
         setupBadge(navView)
+
+        Convex.client.authState.collectWithLifecycle(this){
+            SignInUserCase().invoke(it)
+        }
     }
 
     private fun setupBadge(navView: BottomNavigationView) {
