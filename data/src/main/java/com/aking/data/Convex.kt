@@ -2,6 +2,7 @@ package com.aking.data
 
 import android.app.Application
 import com.auth0.android.result.Credentials
+import dev.convex.android.AuthProvider
 import dev.convex.android.ConvexClientWithAuth
 import dev.convex.android.auth0.Auth0Provider
 
@@ -14,12 +15,11 @@ object Convex {
 
     internal lateinit var app: Application
     private lateinit var _client: ConvexClientWithAuth<Credentials>
-    val client = _client
+    val client get() = _client
 
     fun init(application: Application) {
         if (this::app.isInitialized) return
         app = application
-
         val auth0 = Auth0Provider(
             app,
             app.getString(R.string.com_auth0_client_id),
@@ -28,6 +28,7 @@ object Convex {
             enableCachedLogins = true
         )
         _client = ConvexClientWithAuth(app.getString(R.string.convex_url), auth0)
+
     }
 
 }

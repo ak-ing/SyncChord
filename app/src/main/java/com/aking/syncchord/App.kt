@@ -5,6 +5,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.aking.base.base.BaseApplication
 import com.aking.data.Convex
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androix.startup.KoinStartup.onKoinStartup
@@ -28,13 +30,18 @@ class App : BaseApplication() {
             androidContext(this@App)
             // Load modules
             lazyModules(appModule)
+
+            // app startup
+            @Suppress("DeferredResultUnused")
+            runBlocking {
+                async { Convex.init(this@App) }
+            }
         }
     }
 
     override fun onCreate() {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(ProcessLifecycleObserver())
-        Convex.init(this)
 
         val koin = KoinPlatform.getKoin()
         // wait for start completion

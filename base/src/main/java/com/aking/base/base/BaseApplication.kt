@@ -20,7 +20,7 @@ open class BaseApplication : Application() {
         AppGlobe.init(this)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-            turnOnStrictMode()
+            //turnOnStrictMode()
         }
     }
 

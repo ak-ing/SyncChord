@@ -1,7 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("kapt")
+}
+
+val workoutProperties = Properties().apply {
+    load(rootProject.file("workout.properties").inputStream())
 }
 
 android {
@@ -22,6 +28,24 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            manifestPlaceholders["auth0Domain"] = workoutProperties.getProperty(
+                "auth0.prod_domain", ""
+            )
+            manifestPlaceholders["auth0Scheme"] = workoutProperties.getProperty(
+                "auth0.scheme", ""
+            )
+        }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            manifestPlaceholders["auth0Domain"] = workoutProperties.getProperty(
+                "auth0.dev_domain", ""
+            )
+            manifestPlaceholders["auth0Scheme"] = workoutProperties.getProperty(
+                "auth0.scheme", ""
+            )
         }
     }
     compileOptions {
@@ -38,7 +62,7 @@ android {
 
 dependencies {
     implementation(project(":base"))
-    implementation(project(":data"))
+    api(project(":data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

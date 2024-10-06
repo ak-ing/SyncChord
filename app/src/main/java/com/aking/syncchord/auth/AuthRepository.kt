@@ -1,10 +1,8 @@
-package com.aking.syncchord.profile.ui.data.repository
+package com.aking.syncchord.auth
 
 import android.content.Context
-import com.aking.base.app
 import com.aking.base.base.BaseRepository
 import com.aking.data.ConvexDataSource
-import dev.convex.android.AuthState
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -21,9 +19,9 @@ class AuthRepository(private val dataSource: ConvexDataSource) : BaseRepository(
         //user = null
     }
 
-    suspend fun logout() {
+    suspend fun logout(context: Context) {
         request {
-            dataSource.logout(app)
+            dataSource.logout(context)
         }
     }
 

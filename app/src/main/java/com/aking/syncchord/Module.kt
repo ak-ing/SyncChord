@@ -2,8 +2,8 @@ package com.aking.syncchord
 
 import com.aking.data.Convex
 import com.aking.data.ConvexDataSource
-import com.aking.syncchord.profile.ui.data.repository.AuthRepository
-import com.aking.syncchord.profile.ui.login.LoginViewModel
+import com.aking.syncchord.auth.AuthRepository
+import com.aking.syncchord.auth.AuthViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.lazyModule
@@ -20,5 +20,5 @@ val appModule = lazyModule {
 
     factoryOf(::AuthRepository)
 
-    viewModelOf(::LoginViewModel)
+    viewModelOf(::AuthViewModel)
 }

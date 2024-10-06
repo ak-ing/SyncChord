@@ -3,41 +3,49 @@ package com.aking.syncchord
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.aking.base.extended.collectWithLifecycle
-import com.aking.data.Convex
-import com.aking.data.SignInUserCase
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.aking.base.widget.logE
+import com.aking.syncchord.auth.AuthViewModel
+import dev.convex.android.AuthState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+
+    private val authViewModel: AuthViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-        val navView: BottomNavigationView = findViewById(R.id.navigation)
-        navView.setupWithNavController(navHostFragment.navController)
-        setupBadge(navView)
+        initStartUp()
+        //authViewModel.signInAutomatically()
+    }
 
-        Convex.client.authState.collectWithLifecycle(this){
-            SignInUserCase().invoke(it)
+    private fun initStartUp() {
+        val navController = (supportFragmentManager.findFragmentById(R.id.nav_host)
+                as NavHostFragment).navController
+        authViewModel.authState.collectWithLifecycle(this) {
+            logE(it.toString())
+            if (it is AuthState.Authenticated) {
+                logE("userInfo = ${it.userInfo.user}")
+            }
+            val destinationId = when (it) {
+                is AuthState.Authenticated -> R.id.host
+                is AuthState.Unauthenticated, is AuthState.AuthLoading -> R.id.auth
+            }
+            val current = navController.currentDestination?.id
+            if (current == destinationId || current == null) {
+                return@collectWithLifecycle
+            }
+            navController.navigate(
+                destinationId, null, NavOptions.Builder()
+                    .setPopUpTo(current, true)
+                    .build()
+            )
         }
     }
 
-    private fun setupBadge(navView: BottomNavigationView) {
-        val badge = navView.getOrCreateBadge(R.id.notification)
-        badge.isVisible = true
-        // An icon only badge will be displayed unless a number or text is set:
-        //badge.number = 15  // or badge.text = "New"
-    }
 }

@@ -2,6 +2,7 @@ package com.aking.syncchord.home.ui
 
 import androidx.fragment.app.viewModels
 import com.aking.base.base.BaseFragment
+import com.aking.base.widget.bindSystemWindowInsets
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHomeBinding
 

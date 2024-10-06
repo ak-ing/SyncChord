@@ -1,16 +1,13 @@
 package com.aking.base.widget
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
@@ -21,6 +18,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.aking.base.extended.dp
+
 //import com.bumptech.glide.Glide
 //import com.bumptech.glide.RequestBuilder
 //import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -224,18 +222,16 @@ fun setOnTouchListener(view: View, listener: View.OnTouchListener) {
     requireAll = false
 )
 fun View.bindSystemWindowInsets(
-    topInsets: Boolean,
-    bottomInsets: Boolean,
+    topInsets: Boolean = false,
+    bottomInsets: Boolean = false,
     isInsetsMargin: Boolean = false,
     insetsValue: Int = 0,
-    windowInsetClear: Boolean,
+    windowInsetClear: Boolean = false,
 ) {
-    setOnApplyWindowInsetsListener { v, insets ->
-        WindowInsetsCompat.toWindowInsetsCompat(insets, v).also {
-            if (windowInsetClear) return@setOnApplyWindowInsetsListener insets
-            if (isInsetsMargin) it.insetsMargin(v, topInsets, bottomInsets, insetsValue.dp.toInt())
-            else it.insetsPadding(v, topInsets, bottomInsets, insetsValue.dp.toInt())
-        }
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        if (windowInsetClear) return@setOnApplyWindowInsetsListener insets
+        if (isInsetsMargin) insets.insetsMargin(v, topInsets, bottomInsets, insetsValue)
+        else insets.insetsPadding(v, topInsets, bottomInsets, insetsValue)
         insets
     }
 }
@@ -246,10 +242,9 @@ private fun WindowInsetsCompat.insetsPadding(
     bottomInsets: Boolean,
     insetsValue: Int,
 ) {
-    val top =
-        if (topInsets) getInsets(WindowInsetsCompat.Type.statusBars()).top + insetsValue else v.paddingTop
-    val bottom =
-        if (bottomInsets) getInsets(WindowInsetsCompat.Type.navigationBars()).bottom + insetsValue else v.paddingBottom
+    val systemBars = getInsets(WindowInsetsCompat.Type.systemBars())
+    val top = if (topInsets) systemBars.top + insetsValue else v.paddingTop
+    val bottom = if (bottomInsets) systemBars.bottom + insetsValue else v.paddingBottom
     if (topInsets || bottomInsets) v.updatePadding(top = top, bottom = bottom)
 }
 

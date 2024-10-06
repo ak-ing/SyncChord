@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.MainThread
+import androidx.core.view.WindowCompat
 import androidx.databinding.ViewDataBinding
 import com.aking.base.extended.binding
 
@@ -34,6 +35,15 @@ abstract class BaseFragment<V : ViewDataBinding> : BaseLifecycleFragment {
             binding.setVariable(arg.first, arg.second)
         }
         binding.executePendingBindings()
+    }
+
+    /**
+     * 设置状态栏字体颜色
+     */
+    protected fun setAppearanceLightStatusBars(lightStatusBars: Boolean) {
+        requireActivity().window.let {
+            WindowCompat.getInsetsController(it, it.decorView).isAppearanceLightStatusBars = lightStatusBars
+        }
     }
 
     protected open fun V.initView() {}

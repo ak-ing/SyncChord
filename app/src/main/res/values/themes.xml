@@ -13,6 +13,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <!-- Customize your theme here. -->
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <!-- 背景色 -->
         <item name="android:colorBackground">@color/color_background</item>
         <!-- 表面色:MaterialCardView -->
