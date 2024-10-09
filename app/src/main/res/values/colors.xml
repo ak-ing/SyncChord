@@ -11,6 +11,8 @@
     <color name="color_primary">#5965f1</color>
     <color name="color_primary80">#805965f1</color>
 
+    <color name="color_auth_primary">#404EED</color>
+
     <color name="color_background">#eaedef</color>
     <color name="color_surface">@color/white</color>
     <color name="color_workspace_icon_bg_def">#f2f3f5</color>

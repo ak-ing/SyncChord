@@ -3,11 +3,11 @@ package com.aking.syncchord
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
 import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logE
 import com.aking.syncchord.auth.AuthViewModel
+import com.aking.syncchord.util.findNavController
+import com.aking.syncchord.util.navigateAndClearBackStack
 import dev.convex.android.AuthState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,32 +20,17 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        initStartUp()
-        //authViewModel.signInAutomatically()
-    }
-
-    private fun initStartUp() {
-        val navController = (supportFragmentManager.findFragmentById(R.id.nav_host)
-                as NavHostFragment).navController
+        val navController = findNavController(R.id.nav_host)
+        // 观察身份验证状态并进行相应导航
         authViewModel.authState.collectWithLifecycle(this) {
             logE(it.toString())
-            if (it is AuthState.Authenticated) {
-                logE("userInfo = ${it.userInfo.user}")
-            }
             val destinationId = when (it) {
                 is AuthState.Authenticated -> R.id.host
                 is AuthState.Unauthenticated, is AuthState.AuthLoading -> R.id.auth
             }
-            val current = navController.currentDestination?.id
-            if (current == destinationId || current == null) {
-                return@collectWithLifecycle
-            }
-            navController.navigate(
-                destinationId, null, NavOptions.Builder()
-                    .setPopUpTo(current, true)
-                    .build()
-            )
+            navController.navigateAndClearBackStack(destinationId)
         }
+        //authViewModel.signInAutomatically()
     }
 
 }

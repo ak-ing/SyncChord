@@ -62,7 +62,7 @@ android {
 
 dependencies {
     implementation(project(":base"))
-    api(project(":data"))
+    implementation(project(":data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
