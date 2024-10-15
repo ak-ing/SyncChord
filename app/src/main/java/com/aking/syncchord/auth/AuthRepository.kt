@@ -2,14 +2,13 @@ package com.aking.syncchord.auth
 
 import android.content.Context
 import com.aking.base.base.BaseRepository
-import com.aking.data.ConvexDataSource
+import com.aking.data.datasource.AuthDataSource
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-
-class AuthRepository(private val dataSource: ConvexDataSource) : BaseRepository() {
+class AuthRepository(private val dataSource: AuthDataSource) : BaseRepository() {
 
     val authState get() = dataSource.authState
 

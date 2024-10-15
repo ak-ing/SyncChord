@@ -1,5 +1,6 @@
 package com.aking.base.base
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -22,8 +23,10 @@ abstract class BaseRepository : Closeable {
      * @param requestBlock 请求的整体逻辑
      * @return T
      */
-    protected suspend inline fun <T> request(crossinline requestBlock: suspend () -> T): T =
-        withContext(Dispatchers.IO) { requestBlock.invoke() }
+    protected suspend inline fun <T> request(
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        crossinline requestBlock: suspend () -> T
+    ): T = withContext(dispatcher) { requestBlock.invoke() }
 
     /**
      *
@@ -33,8 +36,11 @@ abstract class BaseRepository : Closeable {
      * @param requestBlock 请求的整体逻辑
      * @return Flow<T>
      */
-    protected fun <T> requestFlow(requestBlock: suspend () -> T): Flow<T> {
-        return flow { emit(requestBlock()) }.flowOn(Dispatchers.IO)
+    protected fun <T> requestFlow(
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        requestBlock: suspend () -> T
+    ): Flow<T> {
+        return flow { emit(requestBlock()) }.flowOn(dispatcher)
     }
 
     override fun close() {

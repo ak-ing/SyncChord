@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 val workoutProperties = Properties().apply {
@@ -60,7 +61,7 @@ dependencies {
     api("dev.convex:android-convexmobile:0.4.1@aar") {
         isTransitive = true
     }
-    implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.json)
     api(libs.android.convex.auth0)
     api(libs.auth0)
 }

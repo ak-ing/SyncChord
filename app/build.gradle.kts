@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("kapt")
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 val workoutProperties = Properties().apply {

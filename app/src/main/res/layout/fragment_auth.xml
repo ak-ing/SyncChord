@@ -62,7 +62,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView2" />
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView2"
+            app:rippleColor="@color/color_primary80" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -3,26 +3,47 @@ package com.aking.syncchord.auth
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.aking.base.base.BaseFragment
+import com.aking.base.extended.collectWithLifecycle
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.google.android.material.snackbar.Snackbar
+import dev.convex.android.AuthState
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
+
     init {
         lifecycleLogEnable(true)
     }
 
-    private val loginViewModel: AuthViewModel by viewModel()
+    private val authViewModel: AuthViewModel by activityViewModel()
 
     override fun FragmentAuthBinding.initView() {
         setAppearanceLightStatusBars(false)
         login.setOnClickListener {
-            loginViewModel.signIn(requireActivity())
+            authViewModel.signIn(requireActivity())
         }
     }
 
     override fun FragmentAuthBinding.initData() {
+        authViewModel.authState.collectWithLifecycle(viewLifecycleOwner) {
+            when (it) {
+                is AuthState.AuthLoading -> {
+                    login.setText(R.string.text_auth_loading)
+                    login.isEnabled = false
+                }
+
+                is AuthState.Unauthenticated -> {
+                    login.setText(R.string.text_nav_login)
+                    login.isEnabled = true
+                }
+
+                is AuthState.Authenticated -> {
+                    Snackbar.make(root, R.string.text_welcome, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
         //loginViewModel.loginResult.observe(viewLifecycleOwner, Observer { loginResult ->
         //    loginResult ?: return@Observer
         //    loading.visibility = View.GONE

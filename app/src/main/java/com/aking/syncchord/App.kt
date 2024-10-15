@@ -5,6 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.aking.base.base.BaseApplication
 import com.aking.data.Convex
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.koin.androidContext
@@ -38,6 +41,11 @@ class App : BaseApplication() {
             }
         }
     }
+
+    // No need to cancel this scope as it'll be torn down with the process
+    val applicationScope = CoroutineScope(SupervisorJob() + CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+    })
 
     override fun onCreate() {
         super.onCreate()

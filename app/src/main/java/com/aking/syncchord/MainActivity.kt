@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logE
+import com.aking.base.widget.logI
 import com.aking.syncchord.auth.AuthViewModel
 import com.aking.syncchord.util.findNavController
 import com.aking.syncchord.util.navigateAndClearBackStack
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         // 观察身份验证状态并进行相应导航
         authViewModel.authState.collectWithLifecycle(this) {
             logE(it.toString())
+            if (it is AuthState.Authenticated) {
+                logI(it.userInfo.toString())
+            }
             val destinationId = when (it) {
                 is AuthState.Authenticated -> R.id.host
                 is AuthState.Unauthenticated, is AuthState.AuthLoading -> R.id.auth
