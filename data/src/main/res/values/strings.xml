@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_auth_fail">出错了，授权认证失败</string>
+</resources>

@@ -10,6 +10,4 @@
     <string name="text_sign_in">登录</string>
     <string name="text_auth_loading">正在授权加载</string>
     <string name="text_welcome">欢迎来到 SyncChord</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

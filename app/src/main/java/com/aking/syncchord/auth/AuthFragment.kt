@@ -4,10 +4,12 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.aking.base.base.BaseFragment
 import com.aking.base.extended.collectWithLifecycle
+import com.aking.data.model.Async.Fail
+import com.aking.data.model.Async.Loading
+import com.aking.data.model.Async.Success
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
 import com.google.android.material.snackbar.Snackbar
-import dev.convex.android.AuthState
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
@@ -29,19 +31,19 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
     override fun FragmentAuthBinding.initData() {
         authViewModel.authState.collectWithLifecycle(viewLifecycleOwner) {
             when (it) {
-                is AuthState.AuthLoading -> {
-                    login.setText(R.string.text_auth_loading)
-                    login.isEnabled = false
+                is Loading -> {
                 }
 
-                is AuthState.Unauthenticated -> {
-                    login.setText(R.string.text_nav_login)
-                    login.isEnabled = true
+                is Success -> {
                 }
 
-                is AuthState.Authenticated -> {
-                    Snackbar.make(root, R.string.text_welcome, Snackbar.LENGTH_SHORT).show()
+                is Fail -> {
+                    it.msg?.let {
+                        Snackbar.make(root, it, Snackbar.LENGTH_SHORT).show()
+                    }
                 }
+
+                else -> {}
             }
         }
         //loginViewModel.loginResult.observe(viewLifecycleOwner, Observer { loginResult ->

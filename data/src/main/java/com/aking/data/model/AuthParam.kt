@@ -15,8 +15,8 @@ data class AuthParam(
      */
     fun toArgs(): Map<String, Any?> = mutableMapOf(
         "params" to params?.toMap(),
-        "provider" to provider,
-        "providerAccountId" to providerAccountId
+        "provider" to (provider ?: ""),
+        "providerAccountId" to (providerAccountId ?: "")
     )
 }
 
@@ -29,8 +29,8 @@ data class Params(
      * Converts this [Params] to a map for easily embedding within the AuthParam map.
      */
     fun toMap(): Map<String, Any?> = mapOf(
-        "email" to email,
-        "image" to image,
-        "name" to name
+        "email" to email ,
+        "image" to (image ?: ""),
+        "name" to (name ?: "")
     )
 }

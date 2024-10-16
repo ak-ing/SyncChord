@@ -1,6 +1,10 @@
 package com.aking.data
 
+import com.aking.data.model.Async
+import com.aking.data.model.Async.Loading
+import com.aking.data.model.Async.Uninitialized
 import com.auth0.android.result.Credentials
+import dev.convex.android.AuthState
 
 /**
  * @author Ak
@@ -20,6 +24,16 @@ fun Credentials.toAuth0Provider(): AuthProvider {
     return AuthProvider(provider, providerInfo.last())
 }
 
+/**
+ * 将AuthState转换为Async
+ */
+fun <T> AuthState<*>.mapToAsync(): Async<T> {
+    return when (this) {
+        is AuthState.Unauthenticated -> Uninitialized
+        is AuthState.AuthLoading -> Loading()
+        else -> error("Unknown AuthState")
+    }
+}
 
 /**
  * 认证方式
