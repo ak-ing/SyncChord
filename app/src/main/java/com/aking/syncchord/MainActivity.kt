@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.aking.base.extended.collectWithLifecycle
-import com.aking.base.widget.logE
-import com.aking.base.widget.logI
-import com.aking.data.model.Async.Success
 import com.aking.syncchord.auth.AuthViewModel
 import com.aking.syncchord.util.findNavController
 import com.aking.syncchord.util.navigateAndClearBackStack
@@ -20,16 +17,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
         val navController = findNavController(R.id.nav_host)
         // 观察身份验证状态并进行相应导航
-        authViewModel.authState.collectWithLifecycle(this) {
-            logE(it.toString())
-            if (it is Success) {
-                logI(it.invoke().toString())
-            }
-            val destinationId = when (it) {
-                is Success -> R.id.host
+        authViewModel.stateFlow.collectWithLifecycle(this) {
+            val destinationId = when {
+                it.isAuthenticated -> R.id.host
                 else -> R.id.auth
             }
             navController.navigateAndClearBackStack(destinationId)

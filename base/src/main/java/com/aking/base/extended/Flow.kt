@@ -1,5 +1,6 @@
 package com.aking.base.extended
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
@@ -18,4 +19,15 @@ fun <T> Flow<T>.collectWithLifecycle(
     collector: FlowCollector<T>
 ) = lifecycleOwner.lifecycleScope.launch {
     flowWithLifecycle(lifecycleOwner.lifecycle, minActiveState).collect(collector)
+}
+
+/**
+ * @see collectWithLifecycle
+ */
+fun <T> Flow<T>.collectWithLifecycle(
+    fragment: Fragment,
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+    action: suspend (T) -> Unit
+) = fragment.viewLifecycleOwner.lifecycleScope.launch {
+    flowWithLifecycle(fragment.viewLifecycleOwner.lifecycle, minActiveState).collect(action)
 }

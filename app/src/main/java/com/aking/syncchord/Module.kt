@@ -3,6 +3,7 @@ package com.aking.syncchord
 import com.aking.data.Convex
 import com.aking.data.datasource.AuthDataSource
 import com.aking.syncchord.auth.AuthRepository
+import com.aking.syncchord.auth.AuthUiState
 import com.aking.syncchord.auth.AuthViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -16,9 +17,9 @@ import org.koin.dsl.lazyModule
 val appModule = lazyModule {
     single { Convex.client }
 
-    factoryOf(::AuthDataSource)
-
-    factoryOf(::AuthRepository)
 
     viewModelOf(::AuthViewModel)
+    factoryOf(::AuthRepository)
+    factoryOf(::AuthDataSource)
+    factory { AuthUiState() }
 }

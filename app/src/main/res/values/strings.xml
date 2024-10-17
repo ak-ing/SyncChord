@@ -10,4 +10,6 @@
     <string name="text_sign_in">登录</string>
     <string name="text_auth_loading">正在授权加载</string>
     <string name="text_welcome">欢迎来到 SyncChord</string>
+    <string name="text_auth_fail">出错了，授权认证失败</string>
+    <string name="text_error_msg">错误信息</string>
 </resources>

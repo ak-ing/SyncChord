@@ -1,4 +1,4 @@
-package com.aking.data.model
+package com.aking.base
 
 /**
  * The T generic is unused for some classes but since it is sealed and useful for Success and Fail,
@@ -61,11 +61,7 @@ sealed class Async<out T>(val complete: Boolean, val shouldLoad: Boolean, privat
         var metadata: Any? = null
     }
 
-    data class Fail<out T>(
-        val error: Throwable,
-        val msg: String? = error.message,
-        private val value: T? = null
-    ) :
+    data class Fail<out T>(val error: Throwable, private val value: T? = null) :
         Async<T>(complete = true, shouldLoad = true, value = value) {
         override fun equals(other: Any?): Boolean {
             if (other !is Fail<*>) return false
