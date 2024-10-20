@@ -1,6 +1,9 @@
 package com.aking.base.widget
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.RippleDrawable
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.View.GONE
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.aking.base.extended.dp
+import com.google.android.material.color.MaterialColors
 
 //import com.bumptech.glide.Glide
 //import com.bumptech.glide.RequestBuilder
@@ -63,6 +67,23 @@ fun View.bindAdjustHeight(adjustHeight: Int) {
     val params = this.layoutParams
     params.height = adjustHeight
     this.layoutParams = params
+}
+
+@BindingAdapter(value = ["rippleWithMask", "rippleWithMaskColor"], requireAll = false)
+fun View.bindRippleWithMask(rippleWithMask: Boolean, rippleColor: Int) {
+    if (rippleWithMask.not()) return
+    val colorStateList = if (rippleColor != 0) {
+        ColorStateList.valueOf(rippleColor)
+    } else {
+        MaterialColors.getColorStateList(
+            context, com.google.android.material.R.attr.colorControlHighlight,
+            ColorStateList.valueOf(Color.TRANSPARENT)
+        )
+    }
+    if (isHardwareAccelerated.not()) {
+        setLayerType(View.LAYER_TYPE_HARDWARE, null)
+    }
+    foreground = RippleDrawable(colorStateList, null, background)
 }
 
 @BindingAdapter(value = ["onTouchListener"])

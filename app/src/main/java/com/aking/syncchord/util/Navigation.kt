@@ -1,8 +1,10 @@
 package com.aking.syncchord.util
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
 import androidx.navigation.fragment.NavHostFragment
 
 /**
@@ -20,14 +22,18 @@ fun AppCompatActivity.findNavController(id: Int): NavController {
 /**
  * Navigate to a destination and clear the back stack
  */
-fun NavController.navigateAndClearBackStack(destinationId: Int) {
+fun NavController.navigateAndClearBackStack(
+    destinationId: Int, args: Bundle? = null,
+    navOptionsBuilder: NavOptions.Builder = NavOptions.Builder(),
+    navigatorExtras: Navigator.Extras? = null
+) {
     val current = currentDestination?.id
     if (current == destinationId || current == null) {
         return
     }
     navigate(
-        destinationId, null, NavOptions.Builder()
-            .setPopUpTo(current, true)
-            .build()
+        destinationId, args,
+        navOptionsBuilder.setPopUpTo(current, true).build(),
+        navigatorExtras
     )
 }

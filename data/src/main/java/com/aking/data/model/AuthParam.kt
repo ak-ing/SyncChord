@@ -29,7 +29,7 @@ data class Params(
      * Converts this [Params] to a map for easily embedding within the AuthParam map.
      */
     fun toMap(): Map<String, Any?> = mapOf(
-        "email" to email ,
+        "email" to (email ?: ""),
         "image" to (image ?: ""),
         "name" to (name ?: "")
     )

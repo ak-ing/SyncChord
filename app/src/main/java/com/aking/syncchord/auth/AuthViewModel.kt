@@ -75,6 +75,8 @@ class AuthViewModel(
         }
     }
 
+    suspend fun hasCachedCredentials() = authRepository.hasCachedCredentials()
+
     fun userMessageShown() {
         setState { copy(errorMessage = null, error = null) }
     }

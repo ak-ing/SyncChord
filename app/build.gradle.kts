@@ -89,4 +89,5 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.startup)
     implementation(libs.koin.core.coroutines)
+    implementation(libs.androidx.datastore.preferences)
 }

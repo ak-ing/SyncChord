@@ -1,16 +1,15 @@
 package com.aking.syncchord.auth
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.isVisible
+import android.view.View
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.aking.base.base.BaseFragment
 import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
+import com.aking.syncchord.util.SnackBarHelper
+import com.aking.syncchord.util.navigateAndClearBackStack
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
@@ -20,6 +19,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
     }
 
     private val authViewModel: AuthViewModel by activityViewModel()
+    private val snackBarHelper by lazy { SnackBarHelper(binding.root) }
 
     override fun FragmentAuthBinding.initView() {
         setAppearanceLightStatusBars(false)
@@ -31,7 +31,10 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
     override fun FragmentAuthBinding.initData() {
         authViewModel.stateFlow.collectWithLifecycle(viewLifecycleOwner) { state ->
             logE(state.toString())
-            if (state.isAuthenticated) return@collectWithLifecycle
+            if (state.isAuthenticated) {
+                naviToHost()
+                return@collectWithLifecycle
+            }
             showLoadingUI(state.isLoading)
             state.errorMessage?.let {
                 showAuthFailed(it, state.error)
@@ -39,26 +42,37 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
         }
     }
 
+    /**
+     * Show a loading spinner if the user is authenticating.
+     */
     private fun showLoadingUI(show: Boolean) {
-        binding.groupLoading.isVisible = show
-        binding.groupDef.isVisible = show.not()
-        setAppearanceLightStatusBars(show)
+        if (show) {
+            binding.groupLoading.visibility = View.VISIBLE
+            binding.groupDef.visibility = View.INVISIBLE
+        } else {
+            binding.groupLoading.visibility = View.GONE
+            binding.groupDef.visibility = View.VISIBLE
+        }
     }
 
+    /**
+     * Show an error message and log the error.
+     */
     private fun showAuthFailed(errorMessage: String, error: Throwable?) {
-        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).apply {
-            setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-            if (error != null) {
-                setAction(R.string.text_error_msg) {
-                    val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
-                    // Creates a new text clip to put on the clipboard.
-                    val clip: ClipData = ClipData.newPlainText("报错日志", error.toString())
-                    // Set the clipboard's primary clip.
-                    clipboard?.setPrimaryClip(clip)
-                }
-            }
-            show()
-        }
+        snackBarHelper.showError(errorMessage, error)
         authViewModel.userMessageShown()
+    }
+
+    /**
+     * Navigate to the host destination
+     */
+    private fun naviToHost() {
+        findNavController().navigateAndClearBackStack(
+            R.id.host, navOptionsBuilder = NavOptions.Builder()
+                .setEnterAnim(R.animator.nav_default_enter_anim)
+                .setExitAnim(R.animator.nav_default_exit_anim)
+                .setPopEnterAnim(R.animator.nav_default_pop_enter_anim)
+                .setPopExitAnim(R.animator.nav_default_pop_exit_anim)
+        )
     }
 }
