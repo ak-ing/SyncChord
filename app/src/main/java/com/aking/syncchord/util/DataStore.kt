@@ -24,9 +24,14 @@ suspend fun <T> DataStore<Preferences>.set(key: Key<T>, value: T) {
     }
 }
 
-suspend fun <T> DataStore<Preferences>.get(key: Key<T>, default: T? = null): T? {
+suspend fun <T> DataStore<Preferences>.get(key: Key<T>, default: T): T {
     val preferences = data.first()
     return preferences[key] ?: default
+}
+
+suspend fun <T> DataStore<Preferences>.get(key: Key<T>): T? {
+    val preferences = data.first()
+    return preferences[key]
 }
 
 

@@ -29,6 +29,14 @@ class AuthDataSource(private val convex: ConvexClientWithAuth<Credentials>) {
         }
     }
 
+    /**
+     * 验证session是否有效
+     */
+    suspend fun validateSession(session: String) = convex.subscribe<Boolean>(
+        "auth:validateSession", mapOf(
+            "token" to session
+        )
+    )
 
     suspend fun signIn(context: Context) {
         convex.login(context)

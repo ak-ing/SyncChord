@@ -1,7 +1,7 @@
 package com.aking.syncchord.auth
 
 import android.view.View
-import androidx.navigation.NavOptions
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.aking.base.base.BaseFragment
 import com.aking.base.extended.collectWithLifecycle
@@ -9,8 +9,7 @@ import com.aking.base.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
 import com.aking.syncchord.util.SnackBarHelper
-import com.aking.syncchord.util.navigateAndClearBackStack
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
@@ -18,7 +17,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
         lifecycleLogEnable(true)
     }
 
-    private val authViewModel: AuthViewModel by activityViewModel()
+    private val authViewModel: AuthViewModel by viewModel()
     private val snackBarHelper by lazy { SnackBarHelper(binding.root) }
 
     override fun FragmentAuthBinding.initView() {
@@ -47,6 +46,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
      */
     private fun showLoadingUI(show: Boolean) {
         if (show) {
+            if (binding.groupLoading.isVisible) return
             binding.groupLoading.visibility = View.VISIBLE
             binding.groupDef.visibility = View.INVISIBLE
         } else {
@@ -67,12 +67,6 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
      * Navigate to the host destination
      */
     private fun naviToHost() {
-        findNavController().navigateAndClearBackStack(
-            R.id.host, navOptionsBuilder = NavOptions.Builder()
-                .setEnterAnim(R.animator.nav_default_enter_anim)
-                .setExitAnim(R.animator.nav_default_exit_anim)
-                .setPopEnterAnim(R.animator.nav_default_pop_enter_anim)
-                .setPopExitAnim(R.animator.nav_default_pop_exit_anim)
-        )
+        findNavController().navigate(R.id.action_auth_to_host)
     }
 }

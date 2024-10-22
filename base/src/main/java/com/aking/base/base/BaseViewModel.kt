@@ -1,6 +1,7 @@
 package com.aking.base.base
 
 import androidx.lifecycle.ViewModel
+import com.aking.base.widget.logI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,5 +22,10 @@ abstract class BaseViewModel<S> : ViewModel() {
 
     protected fun setState(state: S) {
         uiState.value = state
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        logI("onCleared")
     }
 }

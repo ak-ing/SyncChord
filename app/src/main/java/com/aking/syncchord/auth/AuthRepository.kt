@@ -14,11 +14,13 @@ import com.aking.data.model.Auth0Token
 import com.aking.data.toAuth0Provider
 import com.aking.syncchord.util.contains
 import com.aking.syncchord.util.get
+import com.aking.syncchord.util.remove
 import com.aking.syncchord.util.set
 import dev.convex.android.AuthState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 
 /**
@@ -29,7 +31,6 @@ class AuthRepository(
     private val dataSource: AuthDataSource,
     private val dataStore: DataStore<Preferences>
 ) : BaseRepository() {
-
 
     val authState: Flow<Async<Auth0Token>> = dataSource.authState.transform { state ->
         if (state is AuthState.Authenticated) {
@@ -69,6 +70,18 @@ class AuthRepository(
      * 判断是否已经缓存了token
      */
     suspend fun hasCachedCredentials() = dataStore.contains(AUTH0_KEY)
+
+    /**
+     * 验证session
+     */
+    suspend fun validateSession() = request {
+        dataSource.validateSession(dataStore.get(AUTH0_KEY, "").split("|").last()).onEach {
+            // 验证失败，清除缓存
+            if (it.getOrNull() == false) {
+                dataStore.remove(AUTH0_KEY)
+            }
+        }
+    }
 
     suspend fun logout(context: Context) {
         request {

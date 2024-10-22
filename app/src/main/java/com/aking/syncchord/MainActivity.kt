@@ -4,14 +4,14 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.aking.syncchord.auth.AuthViewModel
+import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.util.findNavController
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
-    private val authViewModel: AuthViewModel by viewModel()
+    private val authRepository: AuthRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host)
         lifecycleScope.launch {
             val navGraph = navController.navInflater.inflate(R.navigation.host_graph)
-            val destination = if (authViewModel.hasCachedCredentials()) {
+            val destination = if (authRepository.hasCachedCredentials()) {
                 R.id.host
             } else {
                 R.id.auth
