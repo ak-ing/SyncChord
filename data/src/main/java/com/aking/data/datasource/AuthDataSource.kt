@@ -6,6 +6,8 @@ import com.aking.data.AuthProvider
 import com.aking.data.model.Auth0Token
 import com.aking.data.model.AuthParam
 import com.aking.data.model.Params
+import com.aking.data.model.StoreParam
+import com.aking.data.model.Tokens
 import com.auth0.android.result.Credentials
 import dev.convex.android.ConvexClientWithAuth
 
@@ -26,6 +28,12 @@ class AuthDataSource(private val convex: ConvexClientWithAuth<Credentials>) {
         Log.v("AuthDataSource", "signInAuth0: $authParam")
         return runCatching {
             convex.mutation<Auth0Token>("auth:signInAuth0", authParam.toArgs())
+        }
+    }
+
+    suspend fun store(args: StoreParam): Result<Tokens> {
+        return runCatching {
+            convex.mutation<Tokens>("auth:store", args.toArgs())
         }
     }
 

@@ -90,4 +90,7 @@ dependencies {
     implementation(libs.koin.androidx.startup)
     implementation(libs.koin.core.coroutines)
     implementation(libs.androidx.datastore.preferences)
+
+    // gson
+    implementation ("com.google.code.gson:gson:2.11.0")
 }

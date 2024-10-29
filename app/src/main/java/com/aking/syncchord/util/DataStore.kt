@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.Preferences.Key
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 
 /**
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.first
  * 请勿在同一进程中为给定文件创建多个 DataStore 实例
  */
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val gson = Gson()
 
 suspend fun <T> DataStore<Preferences>.set(key: Key<T>, value: T) {
     edit { preferences ->
@@ -32,6 +34,20 @@ suspend fun <T> DataStore<Preferences>.get(key: Key<T>, default: T): T {
 suspend fun <T> DataStore<Preferences>.get(key: Key<T>): T? {
     val preferences = data.first()
     return preferences[key]
+}
+
+/**
+ * 保存json字符串
+ */
+suspend fun <T> DataStore<Preferences>.setData(key: Key<String>, value: T) {
+    edit { preferences ->
+        preferences[key] = gson.toJson(value)
+    }
+}
+
+suspend inline fun <reified T> DataStore<Preferences>.getData(key: Key<String>): T {
+    val preferences = data.first()
+    return gson.fromJson(preferences[key], T::class.java)
 }
 
 
