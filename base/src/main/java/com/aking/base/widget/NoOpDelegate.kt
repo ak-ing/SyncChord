@@ -8,13 +8,13 @@ import java.lang.reflect.Proxy
  * @author Ak
  * 2024/10/29 9:36
  */
-internal inline fun <reified T : Any> noOpDelegate(): T {
+inline fun <reified T : Any> noOpDelegate(): T {
     val javaClass = T::class.java
     return Proxy.newProxyInstance(
         javaClass.classLoader, arrayOf(javaClass), NO_OP_HANDLER
     ) as T
 }
 
-private val NO_OP_HANDLER = InvocationHandler { _, _, _ ->
+val NO_OP_HANDLER = InvocationHandler { _, _, _ ->
     // no op
 }
