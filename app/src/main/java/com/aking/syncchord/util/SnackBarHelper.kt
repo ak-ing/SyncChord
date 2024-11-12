@@ -26,9 +26,13 @@ class SnackBarHelper(private val view: View) {
      * @param message 要在 Snackbar 中显示的消息。
      * @param duration Snackbar 的持续时间。
      */
-    fun showMessage(message: String, duration: Int = Snackbar.LENGTH_SHORT, onDismiss: (() -> Unit)? = null) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(view)
+    fun showMessage(
+        message: String,
+        duration: Int = Snackbar.LENGTH_SHORT,
+        anchorView: View = view,
+        onDismiss: (() -> Unit)? = null
+    ) {
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -50,11 +54,11 @@ class SnackBarHelper(private val view: View) {
         message: String,
         actionLabel: String,
         duration: Int = Snackbar.LENGTH_SHORT,
+        anchorView: View = view,
         onDismiss: (() -> Unit)? = null,
         action: (View) -> Unit
     ) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(view)
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .setAction(actionLabel, action)
             .addCallback(object : Snackbar.Callback() {
@@ -78,10 +82,10 @@ class SnackBarHelper(private val view: View) {
     fun showError(
         message: String, error: Throwable? = null,
         actionLabel: String = view.context.getString(R.string.text_error_msg),
-        duration: Int = Snackbar.LENGTH_SHORT
+        duration: Int = Snackbar.LENGTH_SHORT,
+        anchorView: View = view
     ) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(view)
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .apply {
                 if (error != null) {
