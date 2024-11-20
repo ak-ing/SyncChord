@@ -31,17 +31,16 @@
             app:menu="@menu/navigation_items" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
             style="@style/Widget.Material3.FloatingActionButton.Primary"
-            bottomSystemWindowInsets="@{true}"
-            isInsetsMargin="@{true}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:contentDescription="TODO"
             android:src="@drawable/ic_chat_add_on_24"
+            android:visibility="gone"
             app:layout_anchor="@id/navigation"
             app:layout_anchorGravity="top|end"
-            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
             app:useCompatPadding="true" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

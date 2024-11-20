@@ -6,8 +6,8 @@ import com.aking.data.AuthProvider
 import com.aking.data.model.Auth0Token
 import com.aking.data.model.AuthParam
 import com.aking.data.model.Params
-import com.aking.data.model.StoreParam
-import com.aking.data.model.Tokens
+import com.aking.data.model.SignParam
+import com.aking.data.model.UserModel
 import com.auth0.android.result.Credentials
 import dev.convex.android.ConvexClientWithAuth
 
@@ -31,9 +31,9 @@ class AuthDataSource(private val convex: ConvexClientWithAuth<Credentials>) {
         }
     }
 
-    suspend fun store(args: StoreParam): Result<Tokens> {
+    suspend fun auth0RetrieveUserInfo(param: SignParam): Result<UserModel> {
         return runCatching {
-            convex.mutation<Tokens>("auth:store", args.toArgs())
+            convex.mutation<UserModel>("auth:auth0RetrieveUserInfo", param.toArgs())
         }
     }
 

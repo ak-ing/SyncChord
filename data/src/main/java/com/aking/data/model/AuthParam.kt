@@ -36,27 +36,14 @@ data class Params(
 }
 
 /**
- * 刷新会话参数
+ * 登录参数
  */
-data class StoreParam(
-    val args: StoreArgs
+data class SignParam(
+    val type: String = "retrieveAccountWithCredentials",
+    val token: String
 ) {
-    constructor(
-        type: String = "refreshSession",
-        refreshToken: String
-    ) : this(StoreArgs(type, refreshToken))
-
     fun toArgs(): Map<String, Any?> = mapOf(
-        "args" to args.toMap()
-    )
-}
-
-data class StoreArgs(
-    val type: String,
-    val refreshToken: String
-) {
-    fun toMap(): Map<String, Any?> = mapOf(
         "type" to type,
-        "refreshToken" to refreshToken
+        "token" to token
     )
 }

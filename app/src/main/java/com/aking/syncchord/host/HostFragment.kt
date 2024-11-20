@@ -27,7 +27,8 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
 
     override fun FragmentHostBinding.initView() {
         setAppearanceLightStatusBars(true)
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_content) as NavHostFragment
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_content) as NavHostFragment
         val navController = navHostFragment.navController
         navigation.setupWithNavController(navController)
         setupBadge(navigation)

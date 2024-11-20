@@ -9,17 +9,15 @@ import com.aking.base.base.BaseRepository
 import com.aking.base.widget.logE
 import com.aking.base.widget.logI
 import com.aking.base.widget.logV
-import com.aking.data.AuthProvider
 import com.aking.data.datasource.AuthDataSource
-import com.aking.data.model.StoreParam
-import com.aking.data.model.Tokens
+import com.aking.data.model.Auth0Token
+import com.aking.data.model.SignParam
 import com.aking.data.toAuth0Provider
 import com.aking.syncchord.util.contains
 import com.aking.syncchord.util.get
 import com.aking.syncchord.util.getData
 import com.aking.syncchord.util.remove
 import com.aking.syncchord.util.setData
-import com.auth0.android.result.Credentials
 import dev.convex.android.AuthState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -36,39 +34,29 @@ class AuthRepository(
     private val dataStore: DataStore<Preferences>
 ) : BaseRepository() {
 
-    val authState: Flow<Async<Tokens>> = dataSource.authState.transform { state ->
+    val authState: Flow<Async<Auth0Token>> = dataSource.authState.transform { state ->
         if (state is AuthState.Authenticated) {
             // 缓存中存在token
             if (dataStore.contains(AUTH0_KEY)) {
-                emit(Async.Success(dataStore.getData<Tokens>(AUTH0_KEY)))
+                emit(Async.Success(dataStore.getData<Auth0Token>(AUTH0_KEY)))
                 return@transform
             }
             // 缓存中不存在token，请求服务器
             val authProvider = state.userInfo.toAuth0Provider()
-            sigInAuth0WithToken(authProvider, state.userInfo).onSuccess {
-                logV("transform sigInAuth0WithToken onSuccess: $it")
+            dataSource.signInAuth0(authProvider, state.userInfo).onSuccess {
+                logV("transform signInAuth0 onSuccess: $it")
                 dataStore.setData(AUTH0_KEY, it)
                 emit(Async.Success(it))
             }.onFailure {
-                logE("transform sigInAuth0WithToken onFailure: $it")
-                emit(Async.Fail<Tokens>(it))
+                logE("transform signInAuth0 onFailure: $it")
+                emit(Async.Fail<Auth0Token>(it))
             }
         } else {
             logI(state.toString())
-            emit(state.mapToAsync<Tokens>())
+            emit(state.mapToAsync<Auth0Token>())
         }
     }.flowOn(Dispatchers.IO)
 
-
-    private suspend fun sigInAuth0WithToken(
-        authProvider: AuthProvider,
-        userInfo: Credentials
-    ): Result<Tokens> {
-        val auth0Token = dataSource.signInAuth0(authProvider, userInfo).getOrElse {
-            return Result.failure(it)
-        }
-        return store(StoreParam(refreshToken = auth0Token.refreshToken))
-    }
 
     /**
      * 将AuthState转换为Async
@@ -90,7 +78,8 @@ class AuthRepository(
      * 验证session
      */
     suspend fun validateSession() = request {
-        dataSource.validateSession(dataStore.get(AUTH0_KEY, "").split("|").last()).onEach {
+        val auth0Token = dataStore.getData<Auth0Token>(AUTH0_KEY)
+        dataSource.validateSession(auth0Token.token).onEach {
             // 验证失败，清除缓存
             if (it.getOrNull() == false) {
                 dataStore.remove(AUTH0_KEY)
@@ -98,8 +87,8 @@ class AuthRepository(
         }
     }
 
-    suspend fun store(args: StoreParam) = request {
-        dataSource.store(args)
+    suspend fun auth0RetrieveUserInfo(param: SignParam) = request {
+        dataSource.auth0RetrieveUserInfo(param)
     }
 
     suspend fun logout(context: Context) {

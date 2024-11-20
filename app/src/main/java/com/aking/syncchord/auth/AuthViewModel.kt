@@ -27,32 +27,34 @@ class AuthViewModel(
     /**
      * Holds the current authentication state of the application.
      */
-    private val job = authRepository.authState.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        Async.Uninitialized
-    ).onEach {
-        when (it) {
-            is Async.Loading -> {
-                setState { copy(isLoading = true) }
-            }
+    init {
+        authRepository.authState.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            Async.Uninitialized
+        ).onEach {
+            when (it) {
+                is Async.Loading -> {
+                    setState { copy(isLoading = true) }
+                }
 
-            is Async.Fail -> {
-                val message = app.getString(R.string.text_auth_fail)
-                setState {
-                    copy(isLoading = false, errorMessage = message, error = it.error)
+                is Async.Fail -> {
+                    val message = app.getString(R.string.text_auth_fail)
+                    setState {
+                        copy(isLoading = false, errorMessage = message, error = it.error)
+                    }
+                }
+
+                is Async.Uninitialized -> {
+                    setState { copy(isLoading = false) }
+                }
+
+                is Async.Success -> {
+                    setState { copy(isLoading = false, isAuthenticated = true) }
                 }
             }
-
-            is Async.Uninitialized -> {
-                setState { copy(isLoading = false) }
-            }
-
-            is Async.Success -> {
-                setState { copy(isLoading = false, isAuthenticated = true) }
-            }
-        }
-    }.launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
+    }
 
     /**
      * Triggers a sign-in flow which will update the [stateFlow].
