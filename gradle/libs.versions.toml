@@ -45,6 +45,7 @@ androidx-annotation = { group = "androidx.annotation", name = "annotation", vers
 # convex
 android-convex-auth0 = { module = "dev.convex:android-convex-auth0", version.ref = "androidConvexAuth0" }
 auth0 = { module = "com.auth0.android:auth0", version.ref = "auth0" }
+auth0-jwt = { module = "com.auth0:java-jwt", version = "4.4.0" }
 # koin
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup" }

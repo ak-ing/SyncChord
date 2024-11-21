@@ -3,9 +3,13 @@ package com.aking.syncchord
 import com.aking.base.app
 import com.aking.data.Convex
 import com.aking.data.datasource.AuthDataSource
+import com.aking.data.datasource.WorkspaceDataSource
 import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.auth.AuthUiState
 import com.aking.syncchord.auth.AuthViewModel
+import com.aking.syncchord.home.ui.HomeState
+import com.aking.syncchord.home.ui.HomeViewModel
+import com.aking.syncchord.home.ui.WorkspaceRepository
 import com.aking.syncchord.host.HostState
 import com.aking.syncchord.host.HostViewModel
 import com.aking.syncchord.util.dataStore
@@ -22,11 +26,18 @@ import org.koin.dsl.lazyModule
 val appModule = lazyModule {
     single { Convex.client }
     single { app.dataStore }
-    singleOf(::AuthRepository)
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HostViewModel)
+    viewModelOf(::HomeViewModel)
+
+    singleOf(::AuthRepository)
+    factoryOf(::WorkspaceRepository)
+
     factoryOf(::AuthDataSource)
+    factoryOf(::WorkspaceDataSource)
+
     factory { AuthUiState() }
     factory { HostState() }
+    factory { HomeState() }
 }

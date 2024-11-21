@@ -40,34 +40,48 @@ import androidx.recyclerview.widget.RecyclerView
  * 2024/11/11 10:57
  */
 inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
+    diffCallback: ItemCallback<D>,
+    items: List<Any> = emptyList(),
     scope: RowRender<D, VB>.() -> Unit
 ) {
-    layoutManager = LinearLayoutManager(context)
-
-    RowRender<D, VB>(
-        reducer = { reducer(it) },
-        diffSetup = { diff, render ->
-            adapter = object : ListAdapter<D, ItemViewHolder>(diff) {
-                override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-                    return ItemViewHolder(render.content(parent, viewType)).apply {
-                        render.run {
-                            getBind<VB>().event(
-                                { getItem(adapterPosition) },
-                                { adapterPosition },
-                                viewType
-                            )
-                        }
-                    }
-                }
-
-                override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-                    render.run {
-                        holder.getBind<VB>().render(getItem(position), position)
+    RowRender<D, VB>().apply {
+        scope()
+        layoutManager = LinearLayoutManager(context)
+        adapter = object : ListAdapter<D, ItemViewHolder>(diffCallback) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+                return ItemViewHolder(requireNotNull(content) {
+                    "content is null,check call content() method first."
+                }(parent, viewType)).apply {
+                    event?.let {
+                        getBind<VB>().it(
+                            { getItem(adapterPosition) },
+                            { adapterPosition },
+                            viewType
+                        )
                     }
                 }
             }
+
+            override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+                render?.let { holder.getBind<VB>().it(getItem(position), position, holder) }
+            }
+
+            override fun getItemViewType(position: Int): Int {
+                itemViewType?.let {
+                    return it(getItem(position), position)
+                }
+                return super.getItemViewType(position)
+            }
+
+            override fun getItemId(position: Int): Long {
+                itemId?.let {
+                    return it(getItem(position), position)
+                }
+                return super.getItemId(position)
+            }
         }
-    ).scope()
+    }
+    reducer(items)
 }
 
 
@@ -81,18 +95,13 @@ class ItemViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(bin
 }
 
 
-class RowRender<D, VB : ViewDataBinding>(
-    private val reducer: (items: List<Any>) -> Unit,
-    private val diffSetup: (diff: ItemCallback<D>, render: RowRender<D, VB>) -> Unit
-) {
-    lateinit var content: (parent: ViewGroup, viewType: Int) -> VB
-    lateinit var event: VB.(item: () -> D, position: () -> Int, viewType: Int) -> Unit
-    lateinit var render: VB.(item: D, position: Int) -> Unit
+class RowRender<D, VB : ViewDataBinding> {
+    var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null
+    var event: (VB.(item: () -> D, position: () -> Int, viewType: Int) -> Unit)? = null
+    var render: (VB.(item: D, position: Int, holder: ItemViewHolder) -> Unit)? = null
 
-    fun setUp(items: List<Any>, diffCallback: ItemCallback<D>) {
-        diffSetup(diffCallback, this)
-        reducer(items)
-    }
+    var itemId: ((item: D, position: Int) -> Long)? = null
+    var itemViewType: ((item: D, position: Int) -> Int)? = null
 
     /**
      * 创建Item内容
@@ -111,9 +120,18 @@ class RowRender<D, VB : ViewDataBinding>(
     /**
      * 渲染Item数据
      */
-    fun render(render: VB.(item: D, position: Int) -> Unit) {
+    fun render(render: VB.(item: D, position: Int, holder: ItemViewHolder) -> Unit) {
         this.render = render
     }
+
+    fun itemViewType(itemViewType: (item: D, position: Int) -> Int) {
+        this.itemViewType = itemViewType
+    }
+
+    fun itemId(itemId: (item: D, position: Int) -> Long) {
+        this.itemId = itemId
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")
