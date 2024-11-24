@@ -64,5 +64,4 @@ dependencies {
     api(libs.kotlinx.serialization.json)
     api(libs.android.convex.auth0)
     api(libs.auth0)
-    api(libs.auth0.jwt)
 }

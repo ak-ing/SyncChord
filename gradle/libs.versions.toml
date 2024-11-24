@@ -3,6 +3,7 @@ agp = "8.5.1"
 androidConvexAuth0 = "0.2.1"
 auth0 = "2.9.2"
 datastorePreferences = "1.1.1"
+gson = "2.11.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -45,7 +46,6 @@ androidx-annotation = { group = "androidx.annotation", name = "annotation", vers
 # convex
 android-convex-auth0 = { module = "dev.convex:android-convex-auth0", version.ref = "androidConvexAuth0" }
 auth0 = { module = "com.auth0.android:auth0", version.ref = "auth0" }
-auth0-jwt = { module = "com.auth0:java-jwt", version = "4.4.0" }
 # koin
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup" }
@@ -54,7 +54,8 @@ koin-core = { module = "io.insert-koin:koin-core" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }
 # 序列化
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-
+# Gson
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

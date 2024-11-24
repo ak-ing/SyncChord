@@ -92,6 +92,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     // gson
-    implementation ("com.google.code.gson:gson:2.11.0")
-    implementation(kotlin("reflect"))
+    implementation (libs.gson)
+    //implementation(kotlin("reflect"))
 }

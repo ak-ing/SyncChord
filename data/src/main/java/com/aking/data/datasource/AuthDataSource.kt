@@ -9,7 +9,9 @@ import com.aking.data.model.Params
 import com.aking.data.model.SignParam
 import com.aking.data.model.UserModel
 import com.auth0.android.result.Credentials
+import dev.convex.android.ConvexClient
 import dev.convex.android.ConvexClientWithAuth
+import dev.convex.android.MobileConvexClientInterface
 
 /**
  * @author Ak
@@ -18,6 +20,13 @@ import dev.convex.android.ConvexClientWithAuth
 class AuthDataSource(private val convex: ConvexClientWithAuth<Credentials>) {
 
     val authState get() = convex.authState
+
+    suspend fun setAuth(idToken: String) {
+        val field = ConvexClient::class.java.getDeclaredField("ffiClient")
+        field.isAccessible = true
+        val ffiClient = field.get(convex) as MobileConvexClientInterface
+        ffiClient.setAuth(idToken)
+    }
 
     /**
      * 使用Auth0信息进行登录并返回token
