@@ -5,7 +5,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.aking.base.base.BaseFragment
-import com.aking.base.extended.collectWithLifecycle
+import com.aking.base.extended.collectOfRepeat
 import com.aking.base.widget.logI
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHostBinding
@@ -22,6 +22,12 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
         lifecycleLogEnable(true)
     }
 
+    companion object {
+        fun newInstance(): HostFragment {
+            return HostFragment()
+        }
+    }
+
     private val viewModel: HostViewModel by viewModel()
     private val snackBarHelper by lazy { SnackBarHelper(binding.navigation) }
 
@@ -35,12 +41,12 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
     }
 
     override fun FragmentHostBinding.initData() {
-        viewModel.stateFlow.collectWithLifecycle(viewLifecycleOwner) { state ->
+        viewModel.stateFlow.collectOfRepeat(viewLifecycleOwner) { state ->
             if (state.validateSession == false) {
                 snackBarHelper.showMessage("认证过期，请重新登录") {
                     lifecycleScope.launchWhenResumed {
                         logI("认证过期 to auth")
-                        findNavController().navigate(R.id.action_host_to_auth)
+                        //findNavController().navigate(R.id.action_host_to_auth)
                     }
                 }
                 viewModel.validateMessageShown()

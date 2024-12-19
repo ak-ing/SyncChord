@@ -11,17 +11,13 @@ import com.aking.base.widget.logI
 import com.aking.base.widget.logV
 import com.aking.data.datasource.AuthDataSource
 import com.aking.data.model.Auth0Token
-import com.aking.data.model.SignParam
-import com.aking.data.toAuth0Provider
 import com.aking.syncchord.util.contains
 import com.aking.syncchord.util.getData
-import com.aking.syncchord.util.remove
 import com.aking.syncchord.util.setData
 import dev.convex.android.AuthState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 
 
@@ -37,16 +33,14 @@ class AuthRepository(
     val authState: Flow<Async<Auth0Token>> = dataSource.authState.transform { state ->
         if (state is AuthState.Authenticated) {
             // 缓存中存在token
-            if (dataStore.contains(AUTH0_KEY)) {
+            if (hasCachedCredentials()) {
                 emit(Async.Success(dataStore.getData<Auth0Token>(AUTH0_KEY)))
                 return@transform
             }
             // 缓存中不存在token，请求服务器
-            val authProvider = state.userInfo.toAuth0Provider()
-            dataSource.signInAuth0(authProvider, state.userInfo).onSuccess {
+            dataSource.signInAuth0().onSuccess {
                 logV("transform signInAuth0 onSuccess: $it")
                 dataStore.setData(AUTH0_KEY, it)
-                dataSource.setAuth(it.token)
                 emit(Async.Success(it))
             }.onFailure {
                 logE("transform signInAuth0 onFailure: $it")
@@ -74,24 +68,12 @@ class AuthRepository(
     /**
      * 判断是否已经缓存了token
      */
-    suspend fun hasCachedCredentials() = dataStore.contains(AUTH0_KEY)
-
-    /**
-     * 验证session
-     */
-    suspend fun validateSession() = request {
-        val auth0Token = dataStore.getData<Auth0Token>(AUTH0_KEY)
-        dataSource.validateSession(auth0Token.token).onEach {
-            // 验证失败，清除缓存
-            if (it.getOrNull() == false) {
-                dataStore.remove(AUTH0_KEY)
-            }
-        }
+    suspend fun hasCachedCredentials(): Boolean {
+        val contains = dataStore.contains(AUTH0_KEY)
+        logI("hasCachedCredentials: $contains")
+        return contains
     }
 
-    suspend fun auth0RetrieveUserInfo(param: SignParam) = request {
-        dataSource.auth0RetrieveUserInfo(param)
-    }
 
     suspend fun logout(context: Context) {
         request {

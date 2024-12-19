@@ -26,6 +26,9 @@ import org.koin.dsl.lazyModule
 val appModule = lazyModule {
     single { Convex.client }
     single { app.dataStore }
+    single { App.applicationScope }
+
+    viewModelOf(::MainViewModel)
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HostViewModel)

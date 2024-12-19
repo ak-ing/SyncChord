@@ -2,12 +2,13 @@ package com.aking.syncchord.auth
 
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.commit
 import com.aking.base.base.BaseFragment
 import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
+import com.aking.syncchord.host.HostFragment
 import com.aking.syncchord.util.SnackBarHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,6 +23,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
 
     override fun FragmentAuthBinding.initView() {
         setAppearanceLightStatusBars(false)
+        authViewModel.initialize()
         login.setOnClickListener {
             authViewModel.signIn(requireActivity())
         }
@@ -39,6 +41,8 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
                 showAuthFailed(it, state.error)
             }
         }
+        // 尝试使用以前缓存的凭据登录
+        authViewModel.signInAutomatically()
     }
 
     /**
@@ -67,6 +71,8 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
      * Navigate to the host destination
      */
     private fun naviToHost() {
-        findNavController().navigate(R.id.action_auth_to_host)
+        parentFragmentManager.commit {
+            replace(R.id.nav_host, HostFragment.newInstance())
+        }
     }
 }

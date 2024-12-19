@@ -1,10 +1,7 @@
 package com.aking.syncchord.host
 
-import androidx.lifecycle.viewModelScope
 import com.aking.base.base.BaseViewModel
-import com.aking.base.widget.logI
 import com.aking.syncchord.auth.AuthRepository
-import kotlinx.coroutines.launch
 
 data class HostState(
     val validateSession: Boolean? = null
@@ -19,20 +16,11 @@ class HostViewModel(
     private val authRepository: AuthRepository
 ) : BaseViewModel<HostState>() {
 
-    init {
-        viewModelScope.launch {
-            authRepository.validateSession().collect { validate ->
-                validate.onSuccess {
-                    logI("validateSession: $it")
-                    setState { copy(validateSession = it) }
-                }.onFailure {
-                    it.printStackTrace()
-                }
-            }
-        }
+    fun validateMessageShown() {
+        update { copy(validateSession = null) }
     }
 
-    fun validateMessageShown() {
-        setState { copy(validateSession = null) }
+    override fun onInit() {
+
     }
 }

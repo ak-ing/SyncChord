@@ -27,6 +27,10 @@ class HomeViewModel(
         }
     }
 
+    override fun onInit() {
+
+    }
+
     fun createWorkspace(name: String) = viewModelScope.launch {
         logI("createWorkspace")
         workspaceRepo.createWorkspace(name).onSuccess {
@@ -38,7 +42,7 @@ class HomeViewModel(
     }
 
     fun switchWorkspace(id: Int) {
-        setState { copy(currentWorkspace = id) }
+        update { copy(currentWorkspace = id) }
     }
 
 }
