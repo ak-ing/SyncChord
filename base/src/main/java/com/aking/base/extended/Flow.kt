@@ -10,10 +10,29 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 
 /**
+ * 在生命周期安全的收集
+ * 解决Flow collect 协程多层嵌套
+ */
+fun <T> Flow<T>.collectWithLifecycle(
+    lifecycleOwner: LifecycleOwner,
+    collector: FlowCollector<T>
+) = lifecycleOwner.lifecycleScope.launchWhenStarted {
+    collect(collector)
+}
+
+/** @see collectWithLifecycle */
+fun <T> Flow<T>.collectWithLifecycle(
+    fragment: Fragment,
+    collector: FlowCollector<T>
+) = fragment.viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+    collect(collector)
+}
+
+/**
  * 在生命周期安全的收集，onStart重复收集
  * 解决Flow collect 协程多层嵌套
  */
-fun <T> Flow<T>.collectOfRepeat(
+fun <T> Flow<T>.launchAndCollectIn(
     lifecycleOwner: LifecycleOwner,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
     collector: FlowCollector<T>
@@ -21,20 +40,11 @@ fun <T> Flow<T>.collectOfRepeat(
     flowWithLifecycle(lifecycleOwner.lifecycle, minActiveState).collect(collector)
 }
 
-fun <T> Flow<T>.collectOfRepeat(
+/** @see launchAndCollectIn */
+fun <T> Flow<T>.launchAndCollectIn(
     fragment: Fragment,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
     action: suspend (T) -> Unit
 ) = fragment.viewLifecycleOwner.lifecycleScope.launch {
     flowWithLifecycle(fragment.viewLifecycleOwner.lifecycle, minActiveState).collect(action)
-}
-
-/**
- * 在生命周期安全的收集
- */
-fun <T> Flow<T>.collectWithLifecycle(
-    lifecycleOwner: LifecycleOwner,
-    collector: FlowCollector<T>
-) = lifecycleOwner.lifecycleScope.launchWhenStarted {
-    collect(collector)
 }

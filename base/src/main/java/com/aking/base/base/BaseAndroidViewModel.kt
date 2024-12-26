@@ -1,22 +1,23 @@
 package com.aking.base.base
 
+import android.app.Application
 import androidx.annotation.MainThread
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.aking.base.widget.logI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Description:
- * 封装状态流，方便使用
- * Created by Rick at 2024-10-17 19:50.
+ * @author Created by Ak on 2024-12-26 20:46.
  */
-abstract class BaseViewModel<S>(initialState: S) : ViewModel() {
+abstract class BaseAndroidViewModel<S>(app: Application, initialState: S) : AndroidViewModel(app) {
     private var initializeCalled = false
 
     private val uiState = MutableStateFlow(initialState)
     val stateFlow = uiState.asStateFlow()
+
+    fun getAppContext() = getApplication<Application>()
 
     /**
      * This function is idempotent provided it is only called from the UI thread.
@@ -29,7 +30,6 @@ abstract class BaseViewModel<S>(initialState: S) : ViewModel() {
     }
 
     protected abstract fun onInitialize()
-
 
     protected fun update(reducer: S.() -> S) {
         uiState.update(reducer)

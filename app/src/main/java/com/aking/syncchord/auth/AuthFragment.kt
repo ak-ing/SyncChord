@@ -2,9 +2,10 @@ package com.aking.syncchord.auth
 
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import com.aking.base.Async
 import com.aking.base.base.BaseFragment
-import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
@@ -24,25 +25,25 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
     override fun FragmentAuthBinding.initView() {
         setAppearanceLightStatusBars(false)
         authViewModel.initialize()
+        // 尝试使用以前缓存的凭据登录
+        authViewModel.reducer(AuthAction.SignInAutomatically)
         login.setOnClickListener {
-            authViewModel.signIn(requireActivity())
+            authViewModel.reducer(AuthAction.SignIn(requireActivity()))
         }
     }
 
     override fun FragmentAuthBinding.initData() {
-        authViewModel.stateFlow.collectWithLifecycle(viewLifecycleOwner) { state ->
+        render(authViewModel.stateFlow) { state ->
             logE(state.toString())
-            if (state.isAuthenticated) {
-                naviToHost()
-                return@collectWithLifecycle
-            }
-            showLoadingUI(state.isLoading)
-            state.errorMessage?.let {
-                showAuthFailed(it, state.error)
+            when (state.auth) {
+                is Async.Fail -> {
+                    showAuthFailed(getString(R.string.text_auth_fail), state.auth.error)
+                }
+
+                is Async.Success -> naviToHost()
+                else -> showLoadingUI(state.auth is Async.Loading)
             }
         }
-        // 尝试使用以前缓存的凭据登录
-        authViewModel.signInAutomatically()
     }
 
     /**
@@ -64,7 +65,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
      */
     private fun showAuthFailed(errorMessage: String, error: Throwable?) {
         snackBarHelper.showError(errorMessage, error)
-        authViewModel.userMessageShown()
+        authViewModel.reducer(AuthAction.UserMessageShown)
     }
 
     /**
@@ -72,6 +73,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth) {
      */
     private fun naviToHost() {
         parentFragmentManager.commit {
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             replace(R.id.nav_host, HostFragment.newInstance())
         }
     }

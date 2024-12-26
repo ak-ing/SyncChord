@@ -32,8 +32,7 @@ class SnackBarHelper(private val view: View) {
         anchorView: View = view,
         onDismiss: (() -> Unit)? = null
     ) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(anchorView)
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -59,8 +58,7 @@ class SnackBarHelper(private val view: View) {
         onDismiss: (() -> Unit)? = null,
         action: (View) -> Unit
     ) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(anchorView)
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .setAction(actionLabel, action)
             .addCallback(object : Snackbar.Callback() {
@@ -87,15 +85,14 @@ class SnackBarHelper(private val view: View) {
         duration: Int = Snackbar.LENGTH_SHORT,
         anchorView: View = view
     ) {
-        Snackbar.make(view, message, duration)
-            .setAnchorView(anchorView)
+        Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
             .apply {
                 if (error != null) {
                     setAction(actionLabel) {
                         val clipboard = view.context.getSystemService(ClipboardManager::class.java)
                         // Creates a new text clip to put on the clipboard.
-                        val clip: ClipData = ClipData.newPlainText("Error Log", error.toString())
+                        val clip: ClipData = ClipData.newPlainText("Error Log", error.stackTraceToString())
                         // Set the clipboard's primary clip.
                         clipboard?.setPrimaryClip(clip)
                     }

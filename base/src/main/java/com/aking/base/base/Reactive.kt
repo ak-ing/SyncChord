@@ -1,8 +1,10 @@
 package com.aking.base.base
 
+import kotlinx.coroutines.flow.Flow
+
 /**
  * @author Created by Ak on 2024-12-19 23:05.
  */
-interface Reactive<S> {
-    fun render(state: S)
+abstract class Reactive<S>(val state: Flow<S>) {
+    abstract fun render(state: S)
 }

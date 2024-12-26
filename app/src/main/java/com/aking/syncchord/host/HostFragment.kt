@@ -2,10 +2,9 @@ package com.aking.syncchord.host
 
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.aking.base.base.BaseFragment
-import com.aking.base.extended.collectOfRepeat
+import com.aking.base.extended.launchAndCollectIn
 import com.aking.base.widget.logI
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHostBinding
@@ -41,7 +40,7 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
     }
 
     override fun FragmentHostBinding.initData() {
-        viewModel.stateFlow.collectOfRepeat(viewLifecycleOwner) { state ->
+        viewModel.stateFlow.launchAndCollectIn(viewLifecycleOwner) { state ->
             if (state.validateSession == false) {
                 snackBarHelper.showMessage("认证过期，请重新登录") {
                     lifecycleScope.launchWhenResumed {

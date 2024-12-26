@@ -17,6 +17,7 @@ import com.aking.syncchord.util.setData
 import dev.convex.android.AuthState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.transform
 
@@ -31,6 +32,7 @@ class AuthRepository(
 ) : BaseRepository() {
 
     val authState: Flow<Async<Auth0Token>> = dataSource.authState.transform { state ->
+        logI(state.toString())
         if (state is AuthState.Authenticated) {
             // 缓存中存在token
             if (hasCachedCredentials()) {
@@ -51,7 +53,10 @@ class AuthRepository(
             logI(state.toString())
             emit(state.mapToAsync<Auth0Token>())
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(Dispatchers.IO).catch {
+        it.printStackTrace()
+        emit(Async.Fail(it))
+    }
 
 
     /**

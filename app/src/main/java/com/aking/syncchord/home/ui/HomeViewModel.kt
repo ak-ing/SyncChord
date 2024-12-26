@@ -14,9 +14,8 @@ data class HomeState(
 )
 
 class HomeViewModel(
-    override val initialState: HomeState,
     private val workspaceRepo: WorkspaceRepository
-) : BaseViewModel<HomeState>() {
+) : BaseViewModel<HomeState>(HomeState()) {
 
     init {
         viewModelScope.launch {
@@ -27,7 +26,7 @@ class HomeViewModel(
         }
     }
 
-    override fun onInit() {
+    override fun onInitialize() {
 
     }
 

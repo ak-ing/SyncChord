@@ -12,15 +12,14 @@ data class HostState(
  * Created by Rick at 2024-10-22 22:45.
  */
 class HostViewModel(
-    override val initialState: HostState,
     private val authRepository: AuthRepository
-) : BaseViewModel<HostState>() {
+) : BaseViewModel<HostState>(HostState()) {
 
     fun validateMessageShown() {
         update { copy(validateSession = null) }
     }
 
-    override fun onInit() {
+    override fun onInitialize() {
 
     }
 }
