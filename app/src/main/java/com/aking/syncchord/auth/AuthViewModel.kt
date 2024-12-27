@@ -39,23 +39,7 @@ class AuthViewModel(
     override fun onInitialize() {
         authRepository.authState.onEach {
             logI(it.toString())
-            when (it) {
-                is Async.Loading -> {
-                    update { copy(auth = it) }
-                    delay(1000)
-                }
-
-                is Async.Fail -> {
-                    val message = getAppContext().getString(R.string.text_auth_fail)
-                    update {
-                        copy(auth = it, errorMessage = message)
-                    }
-                }
-
-                is Async.Uninitialized, is Async.Success -> {
-                    update { copy(auth = it) }
-                }
-            }
+            handleAuthState(it)
         }.launchIn(viewModelScope)
     }
 
@@ -65,6 +49,26 @@ class AuthViewModel(
             is AuthAction.SignIn -> signIn(intent.activity)
             AuthAction.SignInAutomatically -> signInAutomatically()
             AuthAction.UserMessageShown -> userMessageShown()
+        }
+    }
+
+    private suspend fun handleAuthState(state: Async<Auth0Token>) {
+        when (state) {
+            is Async.Loading -> {
+                update { copy(auth = state) }
+                delay(1000)
+            }
+
+            is Async.Fail -> {
+                val message = getAppContext().getString(R.string.text_auth_fail)
+                update {
+                    copy(auth = state, errorMessage = message)
+                }
+            }
+
+            is Async.Uninitialized, is Async.Success -> {
+                update { copy(auth = state) }
+            }
         }
     }
 

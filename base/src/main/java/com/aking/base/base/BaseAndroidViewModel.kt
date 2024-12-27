@@ -1,8 +1,11 @@
 package com.aking.base.base
 
 import android.app.Application
+import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
+import com.aking.base.extended.collectWithLifecycle
 import com.aking.base.widget.logI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,9 +26,18 @@ abstract class BaseAndroidViewModel<S>(app: Application, initialState: S) : Andr
      * This function is idempotent provided it is only called from the UI thread.
      */
     @MainThread
-    fun initialize() {
+    fun initialize(reactive: Reactive<S>? = null) {
         if (initializeCalled) return
         initializeCalled = true
+        when (reactive) {
+            is Fragment -> {
+                stateFlow.collectWithLifecycle(reactive, reactive::render)
+            }
+
+            is ComponentActivity -> {
+                stateFlow.collectWithLifecycle(reactive, reactive::render)
+            }
+        }
         onInitialize()
     }
 

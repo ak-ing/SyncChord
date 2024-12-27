@@ -7,8 +7,6 @@ import androidx.annotation.MainThread
 import androidx.core.view.WindowCompat
 import androidx.databinding.ViewDataBinding
 import com.aking.base.extended.binding
-import com.aking.base.extended.collectWithLifecycle
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by Rick on 2023-01-30  20:22.
@@ -25,7 +23,7 @@ abstract class BaseFragment<V : ViewDataBinding> : BaseLifecycleFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.initView()
-        binding.initData()
+        initData()
     }
 
     /**
@@ -44,15 +42,12 @@ abstract class BaseFragment<V : ViewDataBinding> : BaseLifecycleFragment {
      */
     protected fun setAppearanceLightStatusBars(lightStatusBars: Boolean) {
         requireActivity().window.let {
-            WindowCompat.getInsetsController(it, it.decorView).isAppearanceLightStatusBars = lightStatusBars
+            WindowCompat.getInsetsController(it, it.decorView).isAppearanceLightStatusBars =
+                lightStatusBars
         }
     }
 
     protected open fun V.initView() {}
-    protected open fun V.initData() {}
-
-    protected fun <S> render(state: Flow<S>, renderState: (S) -> Unit) {
-        state.collectWithLifecycle(viewLifecycleOwner) { renderState(it) }
-    }
+    protected open fun initData() {}
 
 }

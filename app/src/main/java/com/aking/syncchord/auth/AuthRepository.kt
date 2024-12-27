@@ -15,10 +15,13 @@ import com.aking.syncchord.util.contains
 import com.aking.syncchord.util.getData
 import com.aking.syncchord.util.setData
 import dev.convex.android.AuthState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 
 
@@ -27,6 +30,7 @@ import kotlinx.coroutines.flow.transform
  * maintains an in-memory cache of login status and user credentials information.
  */
 class AuthRepository(
+    scope: CoroutineScope,
     private val dataSource: AuthDataSource,
     private val dataStore: DataStore<Preferences>
 ) : BaseRepository() {
@@ -56,7 +60,11 @@ class AuthRepository(
     }.flowOn(Dispatchers.IO).catch {
         it.printStackTrace()
         emit(Async.Fail(it))
-    }
+    }.stateIn(
+        scope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Async.Uninitialized
+    )
 
 
     /**
@@ -81,21 +89,15 @@ class AuthRepository(
 
 
     suspend fun logout(context: Context) {
-        request {
-            dataSource.logout(context)
-        }
+        request { dataSource.logout(context) }
     }
 
     suspend fun signIn(context: Context) {
-        request {
-            dataSource.signIn(context)
-        }
+        request { dataSource.signIn(context) }
     }
 
     suspend fun signInWithCachedCredentials() {
-        request {
-            dataSource.signInWithCachedCredentials()
-        }
+        request { dataSource.signInWithCachedCredentials() }
     }
 
     companion object {

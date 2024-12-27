@@ -15,10 +15,8 @@ import com.google.android.material.snackbar.Snackbar
  * 例如消息、持续时间、操作标签和操作。
  *
  * Created by Rick at 2024-10-18 21:27.
-
- * @param view Snackbar 将锚定到的视图。
  */
-class SnackBarHelper(private val view: View) {
+object SnackBarHelper {
 
     /**
      * 显示具有给定消息和持续时间的 Snackbar。
@@ -28,8 +26,8 @@ class SnackBarHelper(private val view: View) {
      */
     fun showMessage(
         message: String,
+        anchorView: View,
         duration: Int = Snackbar.LENGTH_SHORT,
-        anchorView: View = view,
         onDismiss: (() -> Unit)? = null
     ) {
         Snackbar.make(anchorView, message, duration)
@@ -53,8 +51,8 @@ class SnackBarHelper(private val view: View) {
     fun showMessage(
         message: String,
         actionLabel: String,
+        anchorView: View,
         duration: Int = Snackbar.LENGTH_SHORT,
-        anchorView: View = view,
         onDismiss: (() -> Unit)? = null,
         action: (View) -> Unit
     ) {
@@ -81,9 +79,9 @@ class SnackBarHelper(private val view: View) {
      */
     fun showError(
         message: String, error: Throwable? = null,
-        actionLabel: String = view.context.getString(R.string.text_error_msg),
+        anchorView: View,
+        actionLabel: String = anchorView.context.getString(R.string.text_error_msg),
         duration: Int = Snackbar.LENGTH_SHORT,
-        anchorView: View = view
     ) {
         Snackbar.make(anchorView, message, duration)
             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
@@ -92,7 +90,8 @@ class SnackBarHelper(private val view: View) {
                     setAction(actionLabel) {
                         val clipboard = view.context.getSystemService(ClipboardManager::class.java)
                         // Creates a new text clip to put on the clipboard.
-                        val clip: ClipData = ClipData.newPlainText("Error Log", error.stackTraceToString())
+                        val clip: ClipData =
+                            ClipData.newPlainText("Error Log", error.stackTraceToString())
                         // Set the clipboard's primary clip.
                         clipboard?.setPrimaryClip(clip)
                     }

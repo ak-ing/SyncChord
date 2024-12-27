@@ -4,7 +4,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.aking.base.base.BaseFragment
-import com.aking.base.extended.launchAndCollectIn
+import com.aking.base.base.Reactive
 import com.aking.base.widget.logI
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHostBinding
@@ -15,7 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /**
  * Host
  */
-class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
+class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host),
+    Reactive<HostState> {
 
     init {
         lifecycleLogEnable(true)
@@ -28,7 +29,6 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
     }
 
     private val viewModel: HostViewModel by viewModel()
-    private val snackBarHelper by lazy { SnackBarHelper(binding.navigation) }
 
     override fun FragmentHostBinding.initView() {
         setAppearanceLightStatusBars(true)
@@ -39,17 +39,19 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host) {
         setupBadge(navigation)
     }
 
-    override fun FragmentHostBinding.initData() {
-        viewModel.stateFlow.launchAndCollectIn(viewLifecycleOwner) { state ->
-            if (state.validateSession == false) {
-                snackBarHelper.showMessage("认证过期，请重新登录") {
-                    lifecycleScope.launchWhenResumed {
-                        logI("认证过期 to auth")
-                        //findNavController().navigate(R.id.action_host_to_auth)
-                    }
+    override fun initData() {
+        viewModel.initialize(this)
+    }
+
+    override fun render(state: HostState) {
+        if (state.validateSession == false) {
+            SnackBarHelper.showMessage("认证过期，请重新登录", binding.root) {
+                lifecycleScope.launchWhenResumed {
+                    logI("认证过期 to auth")
+                    //findNavController().navigate(R.id.action_host_to_auth)
                 }
-                viewModel.validateMessageShown()
             }
+            viewModel.validateMessageShown()
         }
     }
 
