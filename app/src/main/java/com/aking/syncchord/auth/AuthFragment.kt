@@ -18,6 +18,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     Reactive<AuthState> {
 
+    init {
+        lifecycleLogEnable(true)
+    }
+
     private val authViewModel: AuthViewModel by viewModel()
 
     override fun FragmentAuthBinding.initView() {
@@ -34,7 +38,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     }
 
     override fun render(state: AuthState) {
-        logE(state.toString())
+        logE("render state: $state")
         when (state.auth) {
             is Async.Fail -> {
                 showAuthFailed(getString(R.string.text_auth_fail), state.auth.error)

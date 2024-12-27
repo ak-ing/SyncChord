@@ -27,17 +27,17 @@ abstract class BaseAndroidViewModel<S>(app: Application, initialState: S) : Andr
      */
     @MainThread
     fun initialize(reactive: Reactive<S>? = null) {
-        if (initializeCalled) return
-        initializeCalled = true
         when (reactive) {
             is Fragment -> {
-                stateFlow.collectWithLifecycle(reactive, reactive::render)
+                stateFlow.collectWithLifecycle(reactive, collector = reactive::render)
             }
 
             is ComponentActivity -> {
-                stateFlow.collectWithLifecycle(reactive, reactive::render)
+                stateFlow.collectWithLifecycle(reactive, collector = reactive::render)
             }
         }
+        if (initializeCalled) return
+        initializeCalled = true
         onInitialize()
     }
 

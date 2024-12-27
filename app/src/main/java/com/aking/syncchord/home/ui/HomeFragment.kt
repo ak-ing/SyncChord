@@ -1,7 +1,7 @@
 package com.aking.syncchord.home.ui
 
 import com.aking.base.base.BaseFragment
-import com.aking.base.extended.launchAndCollectIn
+import com.aking.base.extended.collectWithLifecycle
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHomeBinding
 import com.aking.syncchord.util.Constants.WORKSPACE_MESSAGE_ID
@@ -23,7 +23,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModel()
 
     override fun FragmentHomeBinding.initView() {
-        viewModel.stateFlow.launchAndCollectIn(viewLifecycleOwner) {
+        viewModel.stateFlow.collectWithLifecycle(viewLifecycleOwner) {
             tabMessage.isSelected = it.currentWorkspace == WORKSPACE_MESSAGE_ID
         }
 
