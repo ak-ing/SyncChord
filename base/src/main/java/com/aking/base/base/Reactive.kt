@@ -9,5 +9,5 @@ interface Reactive<S> {
      * 渲染状态.
      * @param state 状态.
      */
-    fun render(state: S)
+    suspend fun render(state: S)
 }

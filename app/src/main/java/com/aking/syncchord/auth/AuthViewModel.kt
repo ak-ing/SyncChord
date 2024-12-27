@@ -11,7 +11,6 @@ import com.aking.base.base.Reducer
 import com.aking.base.widget.logI
 import com.aking.data.model.Auth0Token
 import com.aking.syncchord.R
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -52,11 +51,10 @@ class AuthViewModel(
         }
     }
 
-    private suspend fun handleAuthState(state: Async<Auth0Token>) {
+    private fun handleAuthState(state: Async<Auth0Token>) {
         when (state) {
             is Async.Loading -> {
                 update { copy(auth = state) }
-                delay(1000)
             }
 
             is Async.Fail -> {

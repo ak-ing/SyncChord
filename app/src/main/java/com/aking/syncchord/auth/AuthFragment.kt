@@ -12,15 +12,12 @@ import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
 import com.aking.syncchord.host.HostFragment
 import com.aking.syncchord.util.SnackBarHelper
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     Reactive<AuthState> {
-
-    init {
-        lifecycleLogEnable(true)
-    }
 
     private val authViewModel: AuthViewModel by viewModel()
 
@@ -37,7 +34,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
         authViewModel.reducer(AuthAction.SignInAutomatically)
     }
 
-    override fun render(state: AuthState) {
+    override suspend fun render(state: AuthState) {
         logE("render state: $state")
         when (state.auth) {
             is Async.Fail -> {
@@ -52,11 +49,12 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     /**
      * Show a loading spinner if the user is authenticating.
      */
-    private fun showLoadingUI(show: Boolean) {
+    private suspend fun showLoadingUI(show: Boolean) {
         if (show) {
             if (binding.groupLoading.isVisible) return
             binding.groupLoading.visibility = View.VISIBLE
             binding.groupDef.visibility = View.INVISIBLE
+            delay(1000)
         } else {
             binding.groupLoading.visibility = View.GONE
             binding.groupDef.visibility = View.VISIBLE
