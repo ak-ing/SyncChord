@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Orientation
 
 
 /**
@@ -39,19 +40,73 @@ import androidx.recyclerview.widget.RecyclerView
  * @author Ak
  * 2024/11/11 10:57
  */
+inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
+    diffCallback: ItemCallback<D>,
+    items: List<Any> = emptyList(),
+    reverse: Boolean = false,
+    scope: RenderBuilder<D, VB>.() -> Unit
+) {
+    RenderBuilder<D, VB>()
+        .renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse, scope)
+}
+
+/**
+ * Simple:
+ * ```
+ * recyclerView.renderRow<String, FragmentHomeBinding> {
+ *     setUp(emptyList(), diffCallback)
+ *     // 创建Item内容
+ *     content { parent, viewType ->
+ *         FragmentHomeBinding.inflate(layoutInflater, parent, false)
+ *     }
+ *     // Item事件设置
+ *     event { item, position, viewType ->
+ *         root.setOnClickListener {
+ *             Toast.makeText(context, "position = $position", Toast.LENGTH_SHORT).show()
+ *         }
+ *     }
+ *     // 渲染Item数据
+ *     render { item, position ->
+ *         text.text = item
+ *     }
+ * }
+ *
+ * // 更新列表
+ * viewModel.items.observe(viewLifecycleOwner) {
+ *     recyclerView.reducer(it)
+ * }
+ * ```
+ *
+ * Dsl 的形式使用 RecyclerView ListAdapter
+ */
 inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
     diffCallback: ItemCallback<D>,
     items: List<Any> = emptyList(),
-    scope: RowRender<D, VB>.() -> Unit
+    reverse: Boolean = false,
+    scope: RenderBuilder<D, VB>.() -> Unit
 ) {
-    RowRender<D, VB>().apply {
+    RenderBuilder<D, VB>()
+        .renderInner(this, items, diffCallback, RecyclerView.HORIZONTAL, reverse, scope)
+}
+
+
+inline fun <D, reified VB : ViewDataBinding> RenderBuilder<D, VB>.renderInner(
+    recyclerView: RecyclerView,
+    items: List<Any> = emptyList(),
+    diffCallback: ItemCallback<D>,
+    @Orientation orientation: Int = RecyclerView.VERTICAL,
+    reverse: Boolean = false,
+    scope: RenderBuilder<D, VB>.() -> Unit
+) {
+    recyclerView.apply {
         scope()
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = LinearLayoutManager(context, orientation, reverse)
         adapter = object : ListAdapter<D, ItemViewHolder>(diffCallback) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-                return ItemViewHolder(requireNotNull(content) {
+                val content = requireNotNull(content) {
                     "content is null,check call content() method first."
-                }(parent, viewType)).apply {
+                }(parent, viewType)
+                return ItemViewHolder(content).apply {
                     event?.let {
                         getBind<VB>().it(
                             { getItem(adapterPosition) },
@@ -80,8 +135,8 @@ inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
                 return super.getItemId(position)
             }
         }
+        reducer(items)
     }
-    reducer(items)
 }
 
 
@@ -95,7 +150,7 @@ class ItemViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(bin
 }
 
 
-class RowRender<D, VB : ViewDataBinding> {
+class RenderBuilder<D, VB : ViewDataBinding> {
     var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null
     var event: (VB.(item: () -> D, position: () -> Int, viewType: Int) -> Unit)? = null
     var render: (VB.(item: D, position: Int, holder: ItemViewHolder) -> Unit)? = null
