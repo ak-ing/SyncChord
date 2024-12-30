@@ -19,6 +19,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     Reactive<AuthState> {
 
+        init {
+            lifecycleLogEnable(true)
+        }
+
     private val authViewModel: AuthViewModel by viewModel()
 
     override fun FragmentAuthBinding.initView() {
@@ -29,7 +33,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     }
 
     override fun initData() {
-        authViewModel.initialize(this@AuthFragment)
+        authViewModel.initialize(this)
         // 尝试使用以前缓存的凭据登录
         authViewModel.reducer(AuthAction.SignInAutomatically)
     }
@@ -77,5 +81,9 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             replace(R.id.nav_host, HostFragment.newInstance())
         }
+    }
+
+    companion object {
+        fun newInstance() = AuthFragment()
     }
 }

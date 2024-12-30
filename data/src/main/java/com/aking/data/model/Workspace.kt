@@ -4,6 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
+ * ```
+ * {"_creationTime":1734616071389.6255,"_id":"kn7bj5z6vh1fn1xm7a7ffv9tp576rhbh","joinCode":"qvafuecb","name":"ak的","userId":"kh7feq3fecgsnfpzahpc91janh76rcae"}
+ * ```
  * @author Created by Ak on 2024-12-19 21:50.
  */
 @Serializable

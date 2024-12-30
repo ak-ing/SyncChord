@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.aking.base.Async
 import com.aking.base.base.BaseRepository
+import com.aking.base.widget.logD
 import com.aking.base.widget.logE
 import com.aking.base.widget.logI
 import com.aking.base.widget.logV
@@ -13,6 +14,7 @@ import com.aking.data.datasource.AuthDataSource
 import com.aking.data.model.Auth0Token
 import com.aking.syncchord.util.contains
 import com.aking.syncchord.util.getData
+import com.aking.syncchord.util.remove
 import com.aking.syncchord.util.setData
 import dev.convex.android.AuthState
 import kotlinx.coroutines.CoroutineScope
@@ -70,9 +72,13 @@ class AuthRepository(
     /**
      * 将AuthState转换为Async
      */
-    private fun <T> AuthState<*>.mapToAsync(): Async<T> {
+    private suspend fun <T> AuthState<*>.mapToAsync(): Async<T> {
         return when (this) {
-            is AuthState.Unauthenticated -> Async.Uninitialized
+            is AuthState.Unauthenticated -> {
+                dataStore.remove(AUTH0_KEY)
+                Async.Uninitialized
+            }
+
             is AuthState.AuthLoading -> Async.Loading()
             else -> error("Unknown AuthState")
         }
@@ -97,6 +103,10 @@ class AuthRepository(
     }
 
     suspend fun signInWithCachedCredentials() {
+        if (hasCachedCredentials().not()) {
+            logD("signInWithCachedCredentials: no cached credentials")
+            return
+        }
         request { dataSource.signInWithCachedCredentials() }
     }
 

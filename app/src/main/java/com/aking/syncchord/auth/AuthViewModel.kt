@@ -8,7 +8,7 @@ import com.aking.base.Async
 import com.aking.base.base.BaseAndroidViewModel
 import com.aking.base.base.Intent
 import com.aking.base.base.Reducer
-import com.aking.base.widget.logI
+import com.aking.base.widget.logD
 import com.aking.data.model.Auth0Token
 import com.aking.syncchord.R
 import kotlinx.coroutines.flow.launchIn
@@ -37,7 +37,7 @@ class AuthViewModel(
      */
     override fun onInitialize() {
         authRepository.authState.onEach {
-            logI(it.toString())
+            logD(it.toString())
             handleAuthState(it)
         }.launchIn(viewModelScope)
     }
