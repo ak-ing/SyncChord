@@ -50,6 +50,15 @@ inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
         .renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse, scope)
 }
 
+inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
+    diffCallback: ItemCallback<D>,
+    items: List<Any> = emptyList(),
+    reverse: Boolean = false,
+    renderBuilder: RenderBuilder<D, VB>
+) {
+    renderBuilder.renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse)
+}
+
 /**
  * Simple:
  * ```
@@ -96,12 +105,12 @@ inline fun <D, reified VB : ViewDataBinding> RenderBuilder<D, VB>.renderInner(
     diffCallback: ItemCallback<D>,
     @Orientation orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false,
-    scope: RenderBuilder<D, VB>.() -> Unit
+    scope: RenderBuilder<D, VB>.() -> Unit = {}
 ) {
     recyclerView.apply {
         scope()
         layoutManager = LinearLayoutManager(context, orientation, reverse)
-        adapter = object : ListAdapter<D, ItemViewHolder>(diffCallback) {
+        val innerAdapter = object : ListAdapter<D, ItemViewHolder>(diffCallback) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
                 val content = requireNotNull(content) {
                     "content is null,check call content() method first."
@@ -135,7 +144,9 @@ inline fun <D, reified VB : ViewDataBinding> RenderBuilder<D, VB>.renderInner(
                 return super.getItemId(position)
             }
         }
-        reducer(items)
+        this@renderInner.adapter = innerAdapter
+        this.adapter = innerAdapter
+        render(items)
     }
 }
 
@@ -150,7 +161,9 @@ class ItemViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(bin
 }
 
 
-class RenderBuilder<D, VB : ViewDataBinding> {
+open class RenderBuilder<D, VB : ViewDataBinding> {
+    var adapter: ListAdapter<D, ItemViewHolder>? = null
+
     var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null
     var event: (VB.(item: () -> D, position: () -> Int, viewType: Int) -> Unit)? = null
     var render: (VB.(item: D, position: Int, holder: ItemViewHolder) -> Unit)? = null
@@ -190,7 +203,7 @@ class RenderBuilder<D, VB : ViewDataBinding> {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun RecyclerView.reducer(items: List<Any>) {
+fun RecyclerView.render(items: List<Any>) {
     adapter?.let {
         (it as ListAdapter<Any, *>).submitList(items)
     }

@@ -10,7 +10,7 @@ import dev.convex.android.ConvexClientWithAuth
  */
 class WorkspaceDataSource(private val convex: ConvexClientWithAuth<Credentials>) {
 
-    suspend fun getWorkspaces() = convex.subscribe<List<Workspace>>("workspaces_auth0:get")
+    suspend fun getWorkspaces() = convex.subscribe<MutableList<Workspace>>("workspaces_auth0:get")
 
     suspend fun createWorkspace(name: String) = runCatching {
         convex.mutation<String>("workspaces_auth0:create", mapOf("name" to name))

@@ -1,5 +1,6 @@
 package com.aking.data.model
 
+import androidx.recyclerview.widget.DiffUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,4 +19,16 @@ data class Workspace(
     val joinCode: String,
     val name: String,
     val userId: String
-)
+) {
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<Workspace>() {
+            override fun areItemsTheSame(oldItem: Workspace, newItem: Workspace): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Workspace, newItem: Workspace): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+}

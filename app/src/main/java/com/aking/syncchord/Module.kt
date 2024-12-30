@@ -6,7 +6,7 @@ import com.aking.data.datasource.AuthDataSource
 import com.aking.data.datasource.WorkspaceDataSource
 import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.auth.AuthViewModel
-import com.aking.syncchord.home.ui.HomeViewModel
+import com.aking.syncchord.home.HomeViewModel
 import com.aking.syncchord.home.domain.WorkspaceRepository
 import com.aking.syncchord.host.HostViewModel
 import com.aking.syncchord.util.dataStore

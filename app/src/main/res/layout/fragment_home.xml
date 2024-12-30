@@ -11,7 +11,7 @@
         topSystemWindowInsets="@{true}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".home.ui.HomeFragment">
+        tools:context=".home.HomeFragment">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/animated_selector_message_tab" />
+            app:srcCompat="@drawable/animated_selector_workspace_icon" />
 
         <View
             android:id="@+id/group_divider"
@@ -61,6 +61,7 @@
             app:strokeWidth="0dp">
 
             <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/workspace_panel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.google.android.material.card.MaterialCardView>
