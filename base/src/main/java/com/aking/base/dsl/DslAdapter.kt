@@ -10,33 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.Orientation
 
 
 /**
- * Simple:
- * ```
- * recyclerView.renderRow<String, FragmentHomeBinding> {
- *     setUp(emptyList(), diffCallback)
- *     // 创建Item内容
- *     content { parent, viewType ->
- *         FragmentHomeBinding.inflate(layoutInflater, parent, false)
- *     }
- *     // Item事件设置
- *     event { item, position, viewType ->
- *         root.setOnClickListener {
- *             Toast.makeText(context, "position = $position", Toast.LENGTH_SHORT).show()
- *         }
- *     }
- *     // 渲染Item数据
- *     render { item, position ->
- *         text.text = item
- *     }
- * }
- *
- * // 更新列表
- * viewModel.items.observe(viewLifecycleOwner) {
- *     recyclerView.reducer(it)
- * }
- * ```
- *
- * Dsl 的形式使用 RecyclerView ListAdapter
+ * DSl 垂直列表渲染
  * @author Ak
  * 2024/11/11 10:57
  */
@@ -44,68 +18,57 @@ inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
     diffCallback: ItemCallback<D>,
     items: List<Any> = emptyList(),
     reverse: Boolean = false,
-    scope: RenderBuilder<D, VB>.() -> Unit
+    scope: AdapterRender<D, VB>.() -> Unit
 ) {
-    RenderBuilder<D, VB>()
+    AdapterRender<D, VB>()
         .renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse, scope)
 }
 
+/**
+ * @see renderColumn
+ */
 inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
     diffCallback: ItemCallback<D>,
     items: List<Any> = emptyList(),
     reverse: Boolean = false,
-    renderBuilder: RenderBuilder<D, VB>
+    renderBuilder: AdapterRender<D, VB>
 ) {
     renderBuilder.renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse)
 }
 
 /**
- * Simple:
- * ```
- * recyclerView.renderRow<String, FragmentHomeBinding> {
- *     setUp(emptyList(), diffCallback)
- *     // 创建Item内容
- *     content { parent, viewType ->
- *         FragmentHomeBinding.inflate(layoutInflater, parent, false)
- *     }
- *     // Item事件设置
- *     event { item, position, viewType ->
- *         root.setOnClickListener {
- *             Toast.makeText(context, "position = $position", Toast.LENGTH_SHORT).show()
- *         }
- *     }
- *     // 渲染Item数据
- *     render { item, position ->
- *         text.text = item
- *     }
- * }
- *
- * // 更新列表
- * viewModel.items.observe(viewLifecycleOwner) {
- *     recyclerView.reducer(it)
- * }
- * ```
- *
- * Dsl 的形式使用 RecyclerView ListAdapter
+ * DSl 水平列表渲染
  */
 inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
     diffCallback: ItemCallback<D>,
     items: List<Any> = emptyList(),
     reverse: Boolean = false,
-    scope: RenderBuilder<D, VB>.() -> Unit
+    scope: AdapterRender<D, VB>.() -> Unit
 ) {
-    RenderBuilder<D, VB>()
+    AdapterRender<D, VB>()
         .renderInner(this, items, diffCallback, RecyclerView.HORIZONTAL, reverse, scope)
 }
 
+/**
+ * @see renderRow
+ */
+inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
+    diffCallback: ItemCallback<D>,
+    items: List<Any> = emptyList(),
+    reverse: Boolean = false,
+    renderBuilder: AdapterRender<D, VB>
+) {
+    renderBuilder.renderInner(this, items, diffCallback, RecyclerView.HORIZONTAL, reverse)
+}
 
-inline fun <D, reified VB : ViewDataBinding> RenderBuilder<D, VB>.renderInner(
+
+inline fun <D, reified VB : ViewDataBinding> AdapterRender<D, VB>.renderInner(
     recyclerView: RecyclerView,
     items: List<Any> = emptyList(),
     diffCallback: ItemCallback<D>,
     @Orientation orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false,
-    scope: RenderBuilder<D, VB>.() -> Unit = {}
+    scope: AdapterRender<D, VB>.() -> Unit = {}
 ) {
     recyclerView.apply {
         scope()
@@ -161,7 +124,7 @@ class ItemViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(bin
 }
 
 
-open class RenderBuilder<D, VB : ViewDataBinding> {
+open class AdapterRender<D, VB : ViewDataBinding> {
     var adapter: ListAdapter<D, ItemViewHolder>? = null
 
     var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null

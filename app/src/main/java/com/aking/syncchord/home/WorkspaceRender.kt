@@ -2,7 +2,7 @@ package com.aking.syncchord.home
 
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import com.aking.base.dsl.RenderBuilder
+import com.aking.base.dsl.AdapterRender
 import com.aking.data.model.Workspace
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.ItemWorkspaceBinding
@@ -12,7 +12,7 @@ import com.aking.syncchord.databinding.ItemWorkspaceBinding
  * Created by Rick at 2024-11-21 20:50.
  */
 class WorkspaceRender(inflater: LayoutInflater) :
-    RenderBuilder<Workspace, ItemWorkspaceBinding>() {
+    AdapterRender<Workspace, ItemWorkspaceBinding>() {
 
     private var current: String = ""
 

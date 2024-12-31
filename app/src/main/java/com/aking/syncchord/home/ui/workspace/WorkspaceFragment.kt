@@ -1,27 +1,36 @@
 package com.aking.syncchord.home.ui.workspace
 
-import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.aking.base.base.BaseFragment
+import com.aking.base.base.Reactive
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentWorkspaceBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author Ak
  * 2024/12/30  16:58
  */
-class WorkspaceFragment : BaseFragment<FragmentWorkspaceBinding>(R.layout.fragment_workspace) {
+class WorkspaceFragment : BaseFragment<FragmentWorkspaceBinding>(R.layout.fragment_workspace),
+    Reactive<WorkspaceState> {
 
     companion object {
         private const val WORKSPACE_ID = "workspace_id"
 
         fun newInstance(id: String) = WorkspaceFragment().apply {
-            arguments = Bundle().apply {
-                putString(WORKSPACE_ID, id)
-            }
+            arguments = bundleOf(WORKSPACE_ID to id)
         }
     }
 
-    override fun FragmentWorkspaceBinding.initView() {
+    private val viewModel by viewModel<WorkspaceViewModel>()
+
+    override fun FragmentWorkspaceBinding.initView() {}
+
+    override fun initData() {
+        viewModel.initialize(this)
+    }
+
+    override suspend fun render(state: WorkspaceState) {
 
     }
 
