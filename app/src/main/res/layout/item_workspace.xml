@@ -15,7 +15,7 @@
             android:id="@+id/icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/selector_workspace_icon"
+            android:src="@drawable/animated_selector_bubble_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

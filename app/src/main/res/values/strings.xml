@@ -12,4 +12,7 @@
     <string name="text_welcome">欢迎来到 SyncChord</string>
     <string name="text_auth_fail">出错了，授权认证失败</string>
     <string name="text_error_msg">错误信息</string>
+    <string name="text_create_service">创建你的服务器</string>
+    <string name="text_create_service_des">服务器是您和好友聚集的地方，\n创建您自己的服务器，开始畅聊吧！</string>
+    <string name="text_service_name_hint">服务器名称</string>
 </resources>

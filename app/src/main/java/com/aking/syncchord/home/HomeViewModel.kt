@@ -13,12 +13,14 @@ const val WORKSPACE_MESSAGE_ID = "0"
 
 data class HomeState(
     val currentWorkspace: String = WORKSPACE_MESSAGE_ID,
-    val workspaces: List<Workspace> = emptyList()
+    val workspaces: List<Workspace> = emptyList(),
+    val showCreateWorkspace: Boolean = false
 )
 
 sealed class HomeAction : Intent {
     data class CreateWorkspace(val name: String) : HomeAction()
     data class SwitchWorkspace(val id: String) : HomeAction()
+    data object CreateWorkspaceShown : HomeAction()
 }
 
 class HomeViewModel(
@@ -41,14 +43,21 @@ class HomeViewModel(
         when (intent) {
             is HomeAction.CreateWorkspace -> createWorkspace(intent.name)
             is HomeAction.SwitchWorkspace -> switchWorkspace(intent.id)
+            is HomeAction.CreateWorkspaceShown -> createWorkspaceShown()
         }
     }
 
     /** 更新状态并附加默认workspace */
     private fun updateAppendDefault(workspaces: List<Workspace> = emptyList()) {
-        update { copy(workspaces = listOf(defWorkspace) + workspaces) }
+        update {
+            copy(
+                showCreateWorkspace = workspaces.isEmpty(),
+                workspaces = listOf(defWorkspace) + workspaces
+            )
+        }
     }
 
+    /** 创建workspace */
     private fun createWorkspace(name: String) = viewModelScope.launch {
         logD("createWorkspace")
         workspaceRepo.createWorkspace(name).onSuccess {
@@ -59,8 +68,13 @@ class HomeViewModel(
 
     }
 
+    /** 切换workspace */
     private fun switchWorkspace(id: String) {
         update { copy(currentWorkspace = id) }
     }
 
+    /** 清楚显示创建workspace页面状态 */
+    private fun createWorkspaceShown() {
+        update { copy(showCreateWorkspace = false) }
+    }
 }
