@@ -8,6 +8,7 @@ import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.auth.AuthViewModel
 import com.aking.syncchord.home.HomeViewModel
 import com.aking.syncchord.home.domain.WorkspaceRepository
+import com.aking.syncchord.home.ui.workspace.WorkspaceViewModel
 import com.aking.syncchord.host.HostViewModel
 import com.aking.syncchord.util.dataStore
 import org.koin.core.module.dsl.factoryOf
@@ -30,6 +31,7 @@ val appModule = lazyModule {
     viewModelOf(::AuthViewModel)
     viewModelOf(::HostViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::WorkspaceViewModel)
 
     singleOf(::AuthRepository)
     factoryOf(::WorkspaceRepository)

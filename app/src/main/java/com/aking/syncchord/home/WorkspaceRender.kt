@@ -1,35 +1,39 @@
 package com.aking.syncchord.home
 
 import android.view.LayoutInflater
-import androidx.core.view.isVisible
-import com.aking.base.dsl.AdapterRender
+import com.aking.base.dsl.MultiTypeRender
 import com.aking.data.model.Workspace
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.ItemWorkspaceBinding
+import com.aking.syncchord.databinding.ItemWorkspaceDefBinding
+
 
 /**
  * Description:
  * Created by Rick at 2024-11-21 20:50.
  */
-class WorkspaceRender(inflater: LayoutInflater) :
-    AdapterRender<Workspace, ItemWorkspaceBinding>() {
+class WorkspaceRender(inflater: LayoutInflater) : MultiTypeRender<Workspace>(inflater) {
 
     private var current: String = ""
 
     init {
-        content { parent, _ ->
-            ItemWorkspaceBinding.inflate(inflater, parent, false)
+        itemViewType { _, position ->
+            if (position == 0) R.layout.item_workspace_def else R.layout.item_workspace
         }
-        render { item, position, holder ->
-            if (position == 0) {
-                name.isVisible = false
-                icon.setImageResource(R.drawable.animated_selector_workspace_icon)
-            } else {
-                name.isVisible = true
-                name.text = item.name
-                icon.setImageResource(R.drawable.selector_workspace_icon)
+
+        render { item, _, holder ->
+            when (val binding = holder.binding) {
+                is ItemWorkspaceBinding -> {
+                    binding.run {
+                        name.text = item.name
+                        icon.isSelected = current == item.id
+                    }
+                }
+
+                is ItemWorkspaceDefBinding -> {
+                    binding.icon.isSelected = current == item.id
+                }
             }
-            icon.isSelected = current == item.id
         }
     }
 

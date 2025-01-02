@@ -10,7 +10,6 @@ import com.aking.base.extended.collectWithLifecycle
 import com.aking.data.model.Workspace
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHomeBinding
-import com.aking.syncchord.databinding.ItemWorkspaceBinding
 import com.aking.syncchord.home.ui.workspace.WorkspaceFragment
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -27,7 +26,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home),
     private val workspaceRender by lazy { WorkspaceRender(layoutInflater) }
 
     override fun FragmentHomeBinding.initView() {
-        rvWorkspaces.renderColumn<Workspace, ItemWorkspaceBinding>(
+        rvWorkspaces.renderColumn(
             Workspace.diffCallback,
             renderBuilder = workspaceRender
         )

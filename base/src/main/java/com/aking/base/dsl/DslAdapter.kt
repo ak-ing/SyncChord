@@ -1,6 +1,8 @@
 package com.aking.base.dsl
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +22,7 @@ inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderColumn(
     reverse: Boolean = false,
     scope: AdapterRender<D, VB>.() -> Unit
 ) {
-    AdapterRender<D, VB>()
+    AdapterRender<D, VB>(LayoutInflater.from(context))
         .renderInner(this, items, diffCallback, RecyclerView.VERTICAL, reverse, scope)
 }
 
@@ -45,7 +47,7 @@ inline fun <D, reified VB : ViewDataBinding> RecyclerView.renderRow(
     reverse: Boolean = false,
     scope: AdapterRender<D, VB>.() -> Unit
 ) {
-    AdapterRender<D, VB>()
+    AdapterRender<D, VB>(LayoutInflater.from(context))
         .renderInner(this, items, diffCallback, RecyclerView.HORIZONTAL, reverse, scope)
 }
 
@@ -80,11 +82,9 @@ inline fun <D, reified VB : ViewDataBinding> AdapterRender<D, VB>.renderInner(
                 }(parent, viewType)
                 return ItemViewHolder(content).apply {
                     event?.let {
-                        getBind<VB>().it(
-                            { getItem(adapterPosition) },
-                            { adapterPosition },
-                            viewType
-                        )
+                        content.root.setOnClickListener {
+                            content.it({ getItem(adapterPosition) }, { adapterPosition }, viewType)
+                        }
                     }
                 }
             }
@@ -123,11 +123,69 @@ class ItemViewHolder(val binding: ViewDataBinding) : RecyclerView.ViewHolder(bin
     }
 }
 
+/**
+ * Simple:
+ * ```
+ * class WorkspaceRender(inflater: LayoutInflater) : MultiTypeRender<Workspace>(inflater) {
+ *
+ *     init {
+ *         itemViewType { _, position ->
+ *             if (position == 0) R.layout.item_workspace_def else R.layout.item_workspace
+ *         }
+ *
+ *         render { item, _, holder ->
+ *             when (val binding = holder.binding) {
+ *                 is ItemWorkspaceBinding -> {
+ *                     binding.run {
+ *                         name.text = item.name
+ *                         icon.isSelected = current == item.id
+ *                     }
+ *                 }
+ *
+ *                 is ItemWorkspaceDefBinding -> {
+ *                     binding.icon.isSelected = current == item.id
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ * ```
+ * 多类型渲染
+ */
+open class MultiTypeRender<D>(inflater: LayoutInflater) :
+    AdapterRender<D, ViewDataBinding>(inflater) {
+    override var content: ((parent: ViewGroup, viewType: Int) -> ViewDataBinding)? =
+        { parent, viewType ->
+            DataBindingUtil.inflate(inflater, viewType, parent, false)
+        }
+}
 
-open class AdapterRender<D, VB : ViewDataBinding> {
+/**
+ * Simple:
+ * ```
+ * class WorkspaceRender(inflater: LayoutInflater) :
+ *     AdapterRender<Workspace, ItemWorkspaceBinding>(inflater) {
+ *
+ *     init {
+ *         //创建Item内容
+ *         content { parent, viewType ->
+ *             ItemWorkspaceBinding.inflate(inflater, parent, false)
+ *         }
+ *
+ *        //渲染Item数据
+ *         render { item, position, holder ->
+ *             icon.setImageResource(R.drawable.selector_workspace_icon)
+ *             name.text = item.name
+ *         }
+ *     }
+ * }
+ * ```
+ * 通用Adapter渲染
+ */
+open class AdapterRender<D, VB : ViewDataBinding>(private val inflater: LayoutInflater) {
     var adapter: ListAdapter<D, ItemViewHolder>? = null
 
-    var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null
+    open var content: ((parent: ViewGroup, viewType: Int) -> VB)? = null
     var event: (VB.(item: () -> D, position: () -> Int, viewType: Int) -> Unit)? = null
     var render: (VB.(item: D, position: Int, holder: ItemViewHolder) -> Unit)? = null
 
