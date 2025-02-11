@@ -1,6 +1,6 @@
 package com.aking.syncchord.home.ui.workspace
 
-import com.aking.base.base.BaseFragment
+import com.aking.reactive.base.BaseFragment
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentMsgWorkspaceBinding
 

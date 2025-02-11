@@ -1,9 +1,9 @@
 package com.aking.syncchord
 
-import com.aking.base.app
 import com.aking.data.Convex
 import com.aking.data.datasource.AuthDataSource
 import com.aking.data.datasource.WorkspaceDataSource
+import com.aking.reactive.app
 import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.auth.AuthViewModel
 import com.aking.syncchord.home.HomeViewModel

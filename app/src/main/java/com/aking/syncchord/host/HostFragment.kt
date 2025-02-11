@@ -4,11 +4,13 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.aking.base.base.BaseFragment
-import com.aking.base.base.Reactive
+import com.aking.reactive.base.BaseFragment
+import com.aking.reactive.base.Reactive
+import com.aking.reactive.base.StateDiff
 import com.aking.syncchord.R
 import com.aking.syncchord.auth.AuthFragment
 import com.aking.syncchord.databinding.FragmentHostBinding
+import com.aking.syncchord.home.HomeState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -42,7 +44,7 @@ class HostFragment : BaseFragment<FragmentHostBinding>(R.layout.fragment_host),
     }
 
 
-    override suspend fun render(state: HostState) {
+    override suspend fun render(state: HostState, diff: StateDiff<HostState>) {
         state.validateSession?.let {
             naviToAuth()
         }

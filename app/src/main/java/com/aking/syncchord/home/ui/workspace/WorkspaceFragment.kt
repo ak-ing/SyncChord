@@ -1,8 +1,9 @@
 package com.aking.syncchord.home.ui.workspace
 
 import androidx.core.os.bundleOf
-import com.aking.base.base.BaseFragment
-import com.aking.base.base.Reactive
+import com.aking.reactive.base.BaseFragment
+import com.aking.reactive.base.Reactive
+import com.aking.reactive.base.StateDiff
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentWorkspaceBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,7 +31,7 @@ class WorkspaceFragment : BaseFragment<FragmentWorkspaceBinding>(R.layout.fragme
         viewModel.initialize(this)
     }
 
-    override suspend fun render(state: WorkspaceState) {
+    override suspend fun render(state: WorkspaceState, diff: StateDiff<WorkspaceState>) {
 
     }
 

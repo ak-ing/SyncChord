@@ -3,8 +3,8 @@ package com.aking.syncchord
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.aking.base.base.BaseApplication
 import com.aking.data.Convex
+import com.aking.reactive.base.BaseApplication
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

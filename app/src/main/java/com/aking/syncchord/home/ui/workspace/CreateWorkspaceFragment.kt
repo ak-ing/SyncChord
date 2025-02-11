@@ -1,7 +1,7 @@
 package com.aking.syncchord.home.ui.workspace
 
 import android.annotation.SuppressLint
-import com.aking.base.base.BaseFragment
+import com.aking.reactive.base.BaseFragment
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentCreateWorkspaceBinding
 import com.google.android.material.internal.ViewUtils

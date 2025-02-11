@@ -4,12 +4,14 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import com.aking.base.Async
-import com.aking.base.base.BaseFragment
-import com.aking.base.base.Reactive
-import com.aking.base.widget.logE
+import com.aking.reactive.Async
+import com.aking.reactive.base.BaseFragment
+import com.aking.reactive.base.Reactive
+import com.aking.reactive.base.StateDiff
+import com.aking.reactive.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
+import com.aking.syncchord.home.ui.workspace.WorkspaceState
 import com.aking.syncchord.host.HostFragment
 import com.aking.syncchord.util.SnackBarHelper
 import kotlinx.coroutines.delay
@@ -38,7 +40,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
         authViewModel.reducer(AuthAction.SignInAutomatically)
     }
 
-    override suspend fun render(state: AuthState) {
+    override suspend fun render(state: AuthState, diff: StateDiff<AuthState>) {
         logE("render state: $state")
         when (state.auth) {
             is Async.Fail -> {

@@ -21,5 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "SyncChord"
 include(":app")
-include(":base")
 include(":data")
+include(":reactive")

@@ -1,6 +1,7 @@
 package com.aking.syncchord.home.ui.workspace
 
-import com.aking.base.base.BaseViewModel
+import com.aking.reactive.base.BaseViewModel
+
 
 data class WorkspaceState(
     val currentWorkspace: String = "0"

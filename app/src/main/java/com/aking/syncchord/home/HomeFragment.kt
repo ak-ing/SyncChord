@@ -3,18 +3,21 @@ package com.aking.syncchord.home
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import com.aking.base.base.BaseFragment
-import com.aking.base.base.Reactive
-import com.aking.base.dsl.render
-import com.aking.base.dsl.renderColumn
-import com.aking.base.extended.collectWithLifecycle
-import com.aking.base.widget.bindSpacingDecoration
 import com.aking.data.model.Workspace
+import com.aking.reactive.base.BaseFragment
+import com.aking.reactive.base.Reactive
+import com.aking.reactive.base.StateDiff
+import com.aking.reactive.dsl.render
+import com.aking.reactive.dsl.renderColumn
+import com.aking.reactive.extended.collectWithLifecycle
+import com.aking.reactive.widget.bindSpacingDecoration
+import com.aking.reactive.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHomeBinding
 import com.aking.syncchord.home.ui.workspace.CreateWorkspaceFragment
 import com.aking.syncchord.home.ui.workspace.MsgWorkspaceFragment
 import com.aking.syncchord.home.ui.workspace.WorkspaceFragment
+import com.aking.syncchord.home.ui.workspace.WorkspaceState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -47,8 +50,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home),
         viewModel.initialize(this)
         viewModel.stateFlow
             .map { it.currentWorkspace }
-            .distinctUntilChanged()
             .collectWithLifecycle(viewLifecycleOwner) {
+                logE("aaaaaa $it")
                 workspaceRender.reducer(it)
                 childFragmentManager.commit {
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -57,7 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home),
             }
     }
 
-    override suspend fun render(state: HomeState) {
+    override suspend fun render(state: HomeState, diff: StateDiff<HomeState>) {
         binding.rvWorkspaces.render(state.workspaces)
         if (state.showCreateWorkspace) {
             delay(1000)

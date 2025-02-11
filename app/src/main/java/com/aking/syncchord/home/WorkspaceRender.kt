@@ -1,8 +1,8 @@
 package com.aking.syncchord.home
 
 import android.view.LayoutInflater
-import com.aking.base.dsl.MultiTypeRender
 import com.aking.data.model.Workspace
+import com.aking.reactive.dsl.MultiTypeRender
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.ItemWorkspaceBinding
 import com.aking.syncchord.databinding.ItemWorkspaceDefBinding

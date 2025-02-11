@@ -1,7 +1,7 @@
 package com.aking.syncchord.home.domain
 
-import com.aking.base.base.BaseRepository
 import com.aking.data.datasource.WorkspaceDataSource
+import com.aking.reactive.base.BaseRepository
 
 /**
  * Description:
