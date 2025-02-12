@@ -1,4 +1,4 @@
-package com.aking.syncchord.home.domain
+package com.aking.syncchord.home.data.repository
 
 import com.aking.data.datasource.WorkspaceDataSource
 import com.aking.reactive.base.BaseRepository

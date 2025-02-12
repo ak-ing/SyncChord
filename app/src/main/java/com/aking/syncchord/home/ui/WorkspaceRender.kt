@@ -1,4 +1,4 @@
-package com.aking.syncchord.home
+package com.aking.syncchord.home.ui
 
 import android.view.LayoutInflater
 import com.aking.data.model.Workspace

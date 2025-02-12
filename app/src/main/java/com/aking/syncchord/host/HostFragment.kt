@@ -10,7 +10,6 @@ import com.aking.reactive.base.StateDiff
 import com.aking.syncchord.R
 import com.aking.syncchord.auth.AuthFragment
 import com.aking.syncchord.databinding.FragmentHostBinding
-import com.aking.syncchord.home.HomeState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

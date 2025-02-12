@@ -1,4 +1,4 @@
-package com.aking.syncchord.home
+package com.aking.syncchord.home.ui
 
 import androidx.lifecycle.viewModelScope
 import com.aking.data.model.Workspace
@@ -6,7 +6,7 @@ import com.aking.reactive.base.BaseViewModel
 import com.aking.reactive.base.Intent
 import com.aking.reactive.base.Reducer
 import com.aking.reactive.widget.logD
-import com.aking.syncchord.home.domain.WorkspaceRepository
+import com.aking.syncchord.home.data.repository.WorkspaceRepository
 import kotlinx.coroutines.launch
 
 const val WORKSPACE_MESSAGE_ID = "0"

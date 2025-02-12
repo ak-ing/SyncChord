@@ -11,7 +11,6 @@ import com.aking.reactive.base.StateDiff
 import com.aking.reactive.widget.logE
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentAuthBinding
-import com.aking.syncchord.home.ui.workspace.WorkspaceState
 import com.aking.syncchord.host.HostFragment
 import com.aking.syncchord.util.SnackBarHelper
 import kotlinx.coroutines.delay
@@ -21,9 +20,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AuthFragment : BaseFragment<FragmentAuthBinding>(R.layout.fragment_auth),
     Reactive<AuthState> {
 
-        init {
-            lifecycleLogEnable(true)
-        }
+    init {
+        lifecycleLogEnable(true)
+    }
 
     private val authViewModel: AuthViewModel by viewModel()
 

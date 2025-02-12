@@ -1,4 +1,4 @@
-package com.aking.syncchord.home
+package com.aking.syncchord.home.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -9,18 +9,14 @@ import com.aking.reactive.base.Reactive
 import com.aking.reactive.base.StateDiff
 import com.aking.reactive.dsl.render
 import com.aking.reactive.dsl.renderColumn
-import com.aking.reactive.extended.collectWithLifecycle
 import com.aking.reactive.widget.bindSpacingDecoration
-import com.aking.reactive.widget.logE
+import com.aking.reactive.widget.logI
 import com.aking.syncchord.R
 import com.aking.syncchord.databinding.FragmentHomeBinding
 import com.aking.syncchord.home.ui.workspace.CreateWorkspaceFragment
 import com.aking.syncchord.home.ui.workspace.MsgWorkspaceFragment
 import com.aking.syncchord.home.ui.workspace.WorkspaceFragment
-import com.aking.syncchord.home.ui.workspace.WorkspaceState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home),
@@ -48,20 +44,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home),
 
     override fun initData() {
         viewModel.initialize(this)
-        viewModel.stateFlow
-            .map { it.currentWorkspace }
-            .collectWithLifecycle(viewLifecycleOwner) {
-                logE("aaaaaa $it")
-                workspaceRender.reducer(it)
-                childFragmentManager.commit {
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    replace(R.id.workspace_panel, switchWorkspacePanel(it))
-                }
-            }
     }
 
     override suspend fun render(state: HomeState, diff: StateDiff<HomeState>) {
-        binding.rvWorkspaces.render(state.workspaces)
+        // 渲染workspace列表
+        diff({ state.workspaces }) {
+            binding.rvWorkspaces.render(it)
+        }
+        // 切换workspace面板
+        diff({ it.currentWorkspace }) {
+            logI("initData currentWorkspace = $it")
+            workspaceRender.reducer(it)
+            childFragmentManager.commit {
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.workspace_panel, switchWorkspacePanel(it))
+            }
+        }
+        // 弹窗'创建workspace'面板
         if (state.showCreateWorkspace) {
             delay(1000)
             viewModel.reducer(HomeAction.CreateWorkspaceShown)
