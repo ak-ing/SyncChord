@@ -52,6 +52,7 @@ abstract class BaseViewModel<S>(initialState: S) : ViewModel() {
      * seed the state production pipeline
      */
     private fun seedPipeline(lifecycleOwner: LifecycleOwner, reactive: Reactive<S>) {
+        stateDiff.clear()   // clear previous state diff
         stateFlow.collectWithLifecycle(lifecycleOwner, collector = {
             stateDiff.onEach(it) {
                 reactive.render(it, stateDiff)

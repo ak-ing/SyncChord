@@ -53,6 +53,7 @@ abstract class BaseAndroidViewModel<S>(app: Application, initialState: S) : Andr
      * seed the state production pipeline
      */
     private fun seedPipeline(lifecycleOwner: LifecycleOwner, reactive: Reactive<S>) {
+        stateDiff.clear()   // clear previous state diff
         stateFlow.collectWithLifecycle(lifecycleOwner, collector = {
             stateDiff.onEach(it) {
                 reactive.render(it, stateDiff)

@@ -8,6 +8,7 @@ import com.aking.syncchord.auth.AuthRepository
 import com.aking.syncchord.auth.AuthViewModel
 import com.aking.syncchord.home.ui.HomeViewModel
 import com.aking.syncchord.home.data.repository.WorkspaceRepository
+import com.aking.syncchord.home.ui.workspace.CreateWorkspaceViewModel
 import com.aking.syncchord.home.ui.workspace.WorkspaceViewModel
 import com.aking.syncchord.host.HostViewModel
 import com.aking.syncchord.util.dataStore
@@ -32,6 +33,7 @@ val appModule = lazyModule {
     viewModelOf(::HostViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::WorkspaceViewModel)
+    viewModelOf(::CreateWorkspaceViewModel)
 
     singleOf(::AuthRepository)
     factoryOf(::WorkspaceRepository)

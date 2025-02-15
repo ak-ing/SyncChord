@@ -43,4 +43,14 @@ class StateDiff<S>(initState: S) {
         block()
         cache = each
     }
+
+    /**
+     * 清除缓存的状态值。
+     * 在某些情况下，可能需要清除缓存的状态值，以便在下次比较时重新计算差异。
+     *
+     * 例如，当页面重新加载时，可能需要清除缓存的状态值。
+     */
+    internal fun clear() {
+        cache = null
+    }
 }

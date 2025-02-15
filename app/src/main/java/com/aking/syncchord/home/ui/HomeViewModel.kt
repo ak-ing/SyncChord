@@ -18,7 +18,6 @@ data class HomeState(
 )
 
 sealed class HomeAction : Intent {
-    data class CreateWorkspace(val name: String) : HomeAction()
     data class SwitchWorkspace(val id: String) : HomeAction()
     data object CreateWorkspaceShown : HomeAction()
 }
@@ -41,7 +40,6 @@ class HomeViewModel(
 
     override fun reducer(intent: HomeAction) {
         when (intent) {
-            is HomeAction.CreateWorkspace -> createWorkspace(intent.name)
             is HomeAction.SwitchWorkspace -> switchWorkspace(intent.id)
             is HomeAction.CreateWorkspaceShown -> createWorkspaceShown()
         }
@@ -57,16 +55,6 @@ class HomeViewModel(
         }
     }
 
-    /** 创建workspace */
-    private fun createWorkspace(name: String) = viewModelScope.launch {
-        logD("createWorkspace")
-        workspaceRepo.createWorkspace(name).onSuccess {
-            logD("onSuccess $it")
-        }.onFailure {
-            logD("onFailure $it")
-        }
-
-    }
 
     /** 切换workspace */
     private fun switchWorkspace(id: String) {
